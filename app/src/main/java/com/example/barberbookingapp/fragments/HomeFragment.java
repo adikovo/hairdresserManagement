@@ -341,6 +341,26 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 Log.d("HomeFragment", "Loaded holidays for " + hairdresserUsername + ": " + selectedHairdresserHolidays);
+                
+                // After loading personal holidays, load general holidays
+                DatabaseReference generalHolidaysRef = FirebaseDatabase.getInstance().getReference("general_holidays");
+                generalHolidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot holidaySnap : snapshot.getChildren()) {
+                            String holiday = holidaySnap.getKey();
+                            if (holiday != null) {
+                                selectedHairdresserHolidays.add(holiday);
+                            }
+                        }
+                        Log.d("HomeFragment", "Loaded general holidays. Total holidays: " + selectedHairdresserHolidays);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("HomeFragment", "Failed to load general holidays", error.toException());
+                    }
+                });
             }
 
             @Override

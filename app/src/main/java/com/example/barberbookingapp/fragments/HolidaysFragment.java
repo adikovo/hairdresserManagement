@@ -32,10 +32,14 @@ There is also a button to add a new holiday to the list
 public class HolidaysFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView emptyText;
-    private List<String> holidaysList;
+    private List<HolidaysAdapter.HolidayItem> holidaysList;
     private HolidaysAdapter adapter;
     private DatabaseReference databaseReference;
+    private DatabaseReference generalHolidaysRef;
     private String currentUsername;
+    private boolean isAdmin;
+    private Button addGeneralHolidayButton;
+    private String role;
 
     @Nullable
     @Override
@@ -45,22 +49,32 @@ public class HolidaysFragment extends Fragment {
         recyclerView = view.findViewById(R.id.holidays_recycler_view);
         emptyText = view.findViewById(R.id.empty_holidays_text);
         Button addHolidayButton = view.findViewById(R.id.add_holiday_button);
+        addGeneralHolidayButton = view.findViewById(R.id.add_general_holiday_button);
 
         holidaysList = new ArrayList<>();
         
-        // Get current user's username
+        // Get current user's username and role
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-        userRef.child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                currentUsername = snapshot.getValue(String.class);
+                currentUsername = snapshot.child("username").getValue(String.class);
+                role = snapshot.child("role").getValue(String.class);
+                isAdmin = "admin".equals(role);
+                
                 if (currentUsername != null) {
-                    // Initialize database reference with username
+                    Log.d("HolidaysFragment", "User loaded - Username: " + currentUsername + ", Is Admin: " + isAdmin);
+                    
+                    // Initialize database references
                     databaseReference = FirebaseDatabase.getInstance().getReference("holidays").child(currentUsername);
+                    generalHolidaysRef = FirebaseDatabase.getInstance().getReference("general_holidays");
+                    
+                    // Show/hide general holiday button based on admin status
+                    addGeneralHolidayButton.setVisibility(isAdmin ? View.VISIBLE : View.GONE);
                     
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    adapter = new HolidaysAdapter(holidaysList, databaseReference);
+                    adapter = new HolidaysAdapter(holidaysList, databaseReference, isAdmin);
                     recyclerView.setAdapter(adapter);
                     
                     loadHolidays();
@@ -69,31 +83,56 @@ public class HolidaysFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("HolidaysFragment", "Failed to load user data: " + error.getMessage());
                 Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show();
             }
         });
 
-        //When clicking the add holiday button, call the function that performs the action
-        addHolidayButton.setOnClickListener(v -> openDatePicker());
+        // Set up personal holiday button
+        addHolidayButton.setOnClickListener(v -> openDatePicker(false));
+
+        // Set up general holiday button
+        addGeneralHolidayButton.setOnClickListener(v -> openDatePicker(true));
 
         return view;
     }
 
-    //Function that adds a holiday to the list
-    //Opens a calendar where you can select a date for the holiday and adds it in the desired format
-    private void openDatePicker() {
+    private void openDatePicker(boolean isGeneral) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 (view, year, month, dayOfMonth) -> {
                     String selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
-                    Log.d("HolidaysFragment", "Selected date: " + selectedDate);
-                    databaseReference.child(selectedDate).setValue(true)
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d("HolidaysFragment", "Holiday added successfully");
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("HolidaysFragment", "Failed to add holiday", e);
-                        });
+                    Log.d("HolidaysFragment", "Selected date: " + selectedDate + " (General: " + isGeneral + ")");
+                    
+                    if (isGeneral) {
+                        // Add to general holidays
+                        generalHolidaysRef.child(selectedDate).setValue(true)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("HolidaysFragment", "General holiday added successfully to general_holidays");
+                                Toast.makeText(getContext(), "General holiday added successfully", Toast.LENGTH_SHORT).show();
+                                // Add to all hairdressers
+                                addHolidayToAllHairdressers(selectedDate);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("HolidaysFragment", "Failed to add general holiday: " + e.getMessage());
+                                Toast.makeText(getContext(), "Failed to add general holiday", Toast.LENGTH_SHORT).show();
+                            });
+                    } else {
+                        // Add to personal holidays
+                        databaseReference.child(selectedDate).setValue(true)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("HolidaysFragment", "Personal holiday added successfully to holidays/" + currentUsername);
+                                Toast.makeText(getContext(), "Personal holiday added successfully", Toast.LENGTH_SHORT).show();
+                                // Add to the list immediately
+                                holidaysList.add(new HolidaysAdapter.HolidayItem(selectedDate, false));
+                                adapter.notifyDataSetChanged();
+                                updateUI();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("HolidaysFragment", "Failed to add personal holiday: " + e.getMessage());
+                                Toast.makeText(getContext(), "Failed to add personal holiday", Toast.LENGTH_SHORT).show();
+                            });
+                    }
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -101,19 +140,78 @@ public class HolidaysFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    //Load all holidays and display their updates
+    private void addHolidayToAllHairdressers(String date) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.orderByChild("role").equalTo("hair dresser").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                    String username = userSnap.child("username").getValue(String.class);
+                    if (username != null) {
+                        DatabaseReference hairdresserHolidaysRef = FirebaseDatabase.getInstance()
+                            .getReference("holidays")
+                            .child(username);
+                        hairdresserHolidaysRef.child(date).setValue(true);
+                    }
+                }
+                
+                // Add to the list immediately for admin
+                if (isAdmin) {
+                    holidaysList.add(new HolidaysAdapter.HolidayItem(date, true));
+                    adapter.notifyDataSetChanged();
+                    updateUI();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("HolidaysFragment", "Failed to add holiday to all hairdressers", error.toException());
+            }
+        });
+    }
+
     private void loadHolidays() {
+        Log.d("HolidaysFragment", "Loading holidays for user: " + currentUsername);
+        
+        // Load personal holidays
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 holidaysList.clear();
+                // Add personal holidays
                 for (DataSnapshot holidaySnap : snapshot.getChildren()) {
                     String holiday = holidaySnap.getKey();
-                    holidaysList.add(holiday);
-                    Log.d("HolidaysFragment", "Loaded holiday: " + holiday);
+                    if (holiday != null) {
+                        Log.d("HolidaysFragment", "Adding personal holiday: " + holiday);
+                        holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, false));
+                    }
                 }
-                adapter.notifyDataSetChanged();
-                updateUI();
+                
+                // Add general holidays for both admin and hairdressers
+                if (isAdmin || "hair dresser".equals(role)) {
+                    generalHolidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot holidaySnap : snapshot.getChildren()) {
+                                String holiday = holidaySnap.getKey();
+                                if (holiday != null) {
+                                    Log.d("HolidaysFragment", "Adding general holiday: " + holiday);
+                                    holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, true));
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                            updateUI();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("HolidaysFragment", "Failed to load general holidays", error.toException());
+                        }
+                    });
+                } else {
+                    adapter.notifyDataSetChanged();
+                    updateUI();
+                }
             }
 
             @Override
@@ -129,9 +227,11 @@ public class HolidaysFragment extends Fragment {
         if (holidaysList.isEmpty()) {
             emptyText.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
+            Log.d("HolidaysFragment", "No holidays to display");
         } else {
             emptyText.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            Log.d("HolidaysFragment", "Displaying " + holidaysList.size() + " holidays");
         }
     }
 }

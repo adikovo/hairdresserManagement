@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/inventory_item_bg"
+    android:background="@drawable/holiday_item_bg"
     android:padding="12dp"
     android:layout_margin="8dp"
     android:gravity="center_vertical">
 
     <!--עיצוב פריט של אייטם ברשימת ימי החופש-->
 
-    <TextView
-        android:id="@+id/holiday_date_text"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Holiday Date"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:gravity="start"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/holiday_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Holiday Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:gravity="start"/>
+
+        <TextView
+            android:id="@+id/holiday_type_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Personal Holiday"
+            android:textSize="12sp"
+            android:textColor="#BBDEFB"
+            android:gravity="start"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/delete_holiday_button"

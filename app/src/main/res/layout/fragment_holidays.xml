@@ -29,10 +29,20 @@
         android:id="@+id/add_holiday_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="Add Holiday"
+        android:text="Add Personal Holiday"
         android:backgroundTint="#FF7043"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/add_general_holiday_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Add General Holiday"
+        android:backgroundTint="#42A5F5"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/empty_holidays_text"
