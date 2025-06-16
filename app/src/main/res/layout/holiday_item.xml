@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/inventory_item_bg"
+    android:padding="12dp"
+    android:layout_margin="8dp"
+    android:gravity="center_vertical">
+
+    <!--עיצוב פריט של אייטם ברשימת ימי החופש-->
+
+    <TextView
+        android:id="@+id/holiday_date_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Holiday Date"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:gravity="start"/>
+
+    <Button
+        android:id="@+id/delete_holiday_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="12dp"
+        android:text="Remove"
+        android:backgroundTint="#FF7043" />
+</LinearLayout>

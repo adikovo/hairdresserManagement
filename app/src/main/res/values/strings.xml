@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">BarberBookingApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="roles_array">
+        <item>Client</item>
+        <item>Barber</item>
+    </string-array>
+
+    <string name="date_time_label">Date and Time</string>
+
+    <string-array name="barber_services">
+        <item>No service selected</item>
+        <item>Men’s haircut - $20</item>
+        <item>Women’s haircut - $40</item>
+        <item>Children’s haircut - $15</item>
+        <item>Regular shave - $10</item>
+        <item>Luxury shave (hot towel) - $25</item>
+        <item>Basic color - $50</item>
+        <item>Color with highlights - $70</item>
+        <item>Basic blow-dry - $20</item>
+        <item>Deluxe blow-dry (special style) - $35</item>
+        <item>Beard grooming - $15</item>
+        <item>Keratin treatment - $100</item>
+        <item>Japanese straightening - $150</item>
+        <item>Deep hair repair treatment - $60</item>
+        <item>Hair mask (moisturizing treatment) - $25</item>
+        <item>Braiding or traditional hair styling - $30</item>
+    </string-array>
+
+    <string name="barbershop_info">Hair Salon – Crafting Style &amp; Confidence Since 2023. Visit us at 19 Even Gvirol St, Herzliya.</string>
+
+    <string-array name="appointment_statuses">
+        <item>Pending</item>
+        <item>Confirmed</item>
+        <item>Cancelled</item>
+        <item>Completed</item>
+    </string-array>
+
+
+    <string-array name="default_times">
+        <item>08:00</item>
+        <item>08:30</item>
+        <item>09:00</item>
+        <item>09:30</item>
+        <item>10:00</item>
+        <item>10:30</item>
+        <item>11:00</item>
+        <item>11:30</item>
+        <item>12:00</item>
+        <item>12:30</item>
+        <item>13:00</item>
+        <item>13:30</item>
+        <item>14:00</item>
+        <item>14:30</item>
+        <item>15:00</item>
+        <item>15:30</item>
+        <item>16:00</item>
+        <item>16:30</item>
+        <item>17:00</item>
+        <item>17:30</item>
+        <item>18:00</item>
+        <item>18:30</item>
+        <item>19:00</item>
+        <item>19:30</item>
+        <item>20:00</item>
+    </string-array>
+
+</resources>

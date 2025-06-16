@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#424242"
+    android:padding="16dp">
+
+    <!--עיצוב הפרגמנט של ההתחברות - הפרגמנט שנפתח בכניסה באפליקציה-->
+
+
+
+    <EditText
+        android:id="@+id/emailLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Email"
+        android:paddingStart="8dp"
+        android:inputType="textEmailAddress"
+        android:textColorHint="#BBDEFB"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_bg"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/passwordLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Password"
+        android:paddingStart="8dp"
+        android:inputType="textPassword"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#BBDEFB"
+        android:background="@drawable/rounded_bg"
+        android:layout_marginBottom="16dp"/>
+    <Button
+        android:id="@+id/login_buttonLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Login"
+        android:backgroundTint="#FF7043"
+        android:layout_marginBottom="8dp"/>
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="180dp"
+        android:src="@drawable/stylist"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/register_buttonLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#BBDEFB"
+        android:text="Don't have an account? Register"
+        android:textColor="#1E88E5" />
+
+
+
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#494141">
+
+    <!--עיצוב הדיאלוג של הלוח מודעות-->
+
+    <EditText
+        android:id="@+id/announcement_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:hint="Type your announcement here"
+        android:padding="12dp"
+        android:background="@drawable/announcement_edit_text_background" />
+</LinearLayout>

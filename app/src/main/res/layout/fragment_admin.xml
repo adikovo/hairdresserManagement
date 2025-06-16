@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#424242"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <!--עיצוב הפרגמנט של הספרים-->
+
+    <Button
+        android:id="@+id/manage_holidays_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Manage Holidays"
+        android:backgroundTint="#FF7043"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/inventory_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Manage Inventory"
+        android:backgroundTint="#42A5F5"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/post_announcement_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Edit Announcement"
+        android:backgroundTint="#66BB6A"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/workers_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Manage Workers"
+        android:backgroundTint="#66BB6A"
+        android:layout_marginBottom="12dp" />
+
+    <ImageView
+        android:layout_width="105dp"
+        android:layout_height="123dp"
+        android:src="@drawable/barbershop" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Appointments Management"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/admin_appointments_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>
