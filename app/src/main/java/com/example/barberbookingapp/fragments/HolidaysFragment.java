@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.barberbookingapp.R;
 import com.example.barberbookingapp.adapters.HolidaysAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +35,7 @@ public class HolidaysFragment extends Fragment {
     private List<String> holidaysList;
     private HolidaysAdapter adapter;
     private DatabaseReference databaseReference;
+    private String currentUsername;
 
     @Nullable
     @Override
@@ -45,13 +47,31 @@ public class HolidaysFragment extends Fragment {
         Button addHolidayButton = view.findViewById(R.id.add_holiday_button);
 
         holidaysList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("holidays");
+        
+        // Get current user's username
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        userRef.child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUsername = snapshot.getValue(String.class);
+                if (currentUsername != null) {
+                    // Initialize database reference with username
+                    databaseReference = FirebaseDatabase.getInstance().getReference("holidays").child(currentUsername);
+                    
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    adapter = new HolidaysAdapter(holidaysList, databaseReference);
+                    recyclerView.setAdapter(adapter);
+                    
+                    loadHolidays();
+                }
+            }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new HolidaysAdapter(holidaysList, databaseReference);
-        recyclerView.setAdapter(adapter);
-
-        loadHolidays();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //When clicking the add holiday button, call the function that performs the action
         addHolidayButton.setOnClickListener(v -> openDatePicker());

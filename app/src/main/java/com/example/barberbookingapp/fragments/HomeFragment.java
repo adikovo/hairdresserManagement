@@ -58,6 +58,8 @@ public class HomeFragment extends Fragment {
     private TextView selectedDateTimeText;
     private MainActivity mainActivity;
     private List<Worker> availableHairdressers;
+    private List<String> selectedHairdresserHolidays;
+    private List<String> selectedHairdresserAppointments;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -198,6 +200,23 @@ public class HomeFragment extends Fragment {
                     );
                     hairdresserAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     hairdresserSpinner.setAdapter(hairdresserAdapter);
+
+                    // Add listener for hairdresser selection
+                    hairdresserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (position > 0) { // Skip "No hairdresser selected"
+                                String selectedHairdresser = parent.getItemAtPosition(position).toString();
+                                fetchHairdresserAvailability(selectedHairdresser);
+                            } else {
+                                selectedHairdresserHolidays = new ArrayList<>();
+                                selectedHairdresserAppointments = new ArrayList<>();
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {}
+                    });
                 } catch (Exception e) {
                     Log.e("HomeFragment", "Error loading hairdressers", e);
                     Toast.makeText(requireContext(), "Error loading hairdressers", Toast.LENGTH_SHORT).show();
@@ -220,17 +239,25 @@ public class HomeFragment extends Fragment {
                     (view1, year, month, dayOfMonth) -> {
                         String selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
                         selectedDateTimeText.setText(selectedDate);
-                        
-                        // Check if the selected hairdresser is available on this date
-                        String selectedHairdresser = hairdresserSpinner.getSelectedItem().toString();
-                        if (!selectedHairdresser.equals("No hairdresser selected")) {
-                            checkSelectedHairdresserAvailability(selectedDate);
-                        }
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
+
+            // Disable holiday dates in the date picker
+            if (selectedHairdresserHolidays != null && !selectedHairdresserHolidays.isEmpty()) {
+                datePickerDialog.getDatePicker().setOnDateChangedListener((view1, year, month, dayOfMonth) -> {
+                    String date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                    if (selectedHairdresserHolidays.contains(date)) {
+                        datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setEnabled(false);
+                        Toast.makeText(requireContext(), "This date is a holiday for the selected hairdresser", Toast.LENGTH_SHORT).show();
+                    } else {
+                        datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setEnabled(true);
+                    }
+                });
+            }
+
             datePickerDialog.show();
         });
 
@@ -245,7 +272,10 @@ public class HomeFragment extends Fragment {
                 String selectedHairdresser = hairdresserSpinner.getSelectedItem().toString();
                 
                 if (!selectedDate.equals("No date selected") && !selectedHairdresser.equals("No hairdresser selected")) {
-                    checkSelectedHairdresserAvailability(selectedDate + " " + selectedTime);
+                    String dateTime = selectedDate + " " + selectedTime;
+                    if (selectedHairdresserAppointments != null && selectedHairdresserAppointments.contains(dateTime)) {
+                        Toast.makeText(requireContext(), "Selected hairdresser is not available at this time", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -280,16 +310,14 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void checkSelectedHairdresserAvailability(String dateTime) {
-        String selectedHairdresser = hairdresserSpinner.getSelectedItem().toString();
-        if (selectedHairdresser.equals("No hairdresser selected")) {
-            return;
-        }
+    private void fetchHairdresserAvailability(String hairdresserUsername) {
+        selectedHairdresserHolidays = new ArrayList<>();
+        selectedHairdresserAppointments = new ArrayList<>();
 
         // Find the selected worker
         Worker selectedWorker = null;
         for (Worker worker : availableHairdressers) {
-            if (worker.getUsername().equals(selectedHairdresser)) {
+            if (worker.getUsername().equals(hairdresserUsername)) {
                 selectedWorker = worker;
                 break;
             }
@@ -300,25 +328,47 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        String date = dateTime.split(" ")[0];
-        Log.d("HomeFragment", "Checking availability for " + selectedWorker.getUsername() + " on " + date);
-
-        if (selectedWorker.isHoliday(date)) {
-            Toast.makeText(requireContext(), "Selected hairdresser is on holiday on this date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check if the hairdresser has any appointments at this time
-        if (selectedWorker.getAppointments() != null) {
-            for (Appointments appointment : selectedWorker.getAppointments()) {
-                if (appointment.getDateTime().equals(dateTime)) {
-                    Toast.makeText(requireContext(), "Selected hairdresser is not available at this time", Toast.LENGTH_SHORT).show();
-                    return;
+        // Fetch holidays for the specific hairdresser
+        DatabaseReference holidaysRef = FirebaseDatabase.getInstance().getReference("holidays").child(hairdresserUsername);
+        holidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                selectedHairdresserHolidays.clear();
+                for (DataSnapshot holidaySnap : snapshot.getChildren()) {
+                    String holiday = holidaySnap.getKey();
+                    if (holiday != null) {
+                        selectedHairdresserHolidays.add(holiday);
+                    }
                 }
+                Log.d("HomeFragment", "Loaded holidays for " + hairdresserUsername + ": " + selectedHairdresserHolidays);
             }
-        }
 
-        // If we get here, the hairdresser is available
-        Log.d("HomeFragment", "Hairdresser is available at selected time");
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("HomeFragment", "Failed to load holidays", error.toException());
+            }
+        });
+
+        // Fetch appointments
+        DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
+        appointmentsRef.orderByChild("hairdresserUsername").equalTo(hairdresserUsername)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        selectedHairdresserAppointments.clear();
+                        for (DataSnapshot appointmentSnap : snapshot.getChildren()) {
+                            Appointments appointment = appointmentSnap.getValue(Appointments.class);
+                            if (appointment != null && appointment.getDateTime() != null) {
+                                selectedHairdresserAppointments.add(appointment.getDateTime());
+                            }
+                        }
+                        Log.d("HomeFragment", "Loaded appointments for " + hairdresserUsername + ": " + selectedHairdresserAppointments);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("HomeFragment", "Failed to load appointments", error.toException());
+                    }
+                });
     }
 }

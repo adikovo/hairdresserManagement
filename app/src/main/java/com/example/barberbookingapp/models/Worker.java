@@ -14,7 +14,7 @@ public class Worker {
     private String phone;
     private String role;
     private List<Appointments> appointments;
-    private List<String> holidays; // List of dates in "yyyy-MM-dd" format
+    private List<String> holidays;
 
     public Worker() {
         this.holidays = new ArrayList<>();
