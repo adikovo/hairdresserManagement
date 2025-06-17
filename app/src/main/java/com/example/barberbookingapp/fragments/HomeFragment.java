@@ -165,7 +165,7 @@ public class HomeFragment extends Fragment {
 
         // Load all hairdressers first
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        usersRef.orderByChild("role").equalTo("hair dresser").addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
@@ -184,7 +184,9 @@ public class HomeFragment extends Fragment {
                         String phone = userSnap.child("phone").getValue(String.class);
                         String role = userSnap.child("role").getValue(String.class);
                         
-                        if (username != null && email != null && phone != null && role != null) {
+                        // Include both hairdressers and admin users
+                        if (username != null && email != null && phone != null && role != null && 
+                            (role.equals("hair dresser") || role.equals("admin"))) {
                             Worker worker = new Worker(username, email, phone, role, new ArrayList<>());
                             worker.setId(userSnap.getKey());
                             availableHairdressers.add(worker);

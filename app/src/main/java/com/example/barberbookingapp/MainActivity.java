@@ -210,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+        try {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -224,19 +225,20 @@ public class MainActivity extends AppCompatActivity {
                                     DataSnapshot dataSnapshot = roleTask.getResult();
                                     if (dataSnapshot.exists()) {
                                         String role = dataSnapshot.getValue(String.class);
-                                        if ("client".equals(role)) {
-                                            navigateToHomeFragment();
-                                        }
-                                        else {
-                                            navigateToAdminFragment();
-                                        }
+                                        if (role != null) {
+                                            if ("client".equals(role)) {
+                                                navigateToHomeFragment();
+                                            } else if ("hair dresser".equals(role) || "admin".equals(role)) {
+                                                navigateToAdminFragment();
+                                            } else {
+                                                Toast.makeText(this, "Invalid user role", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } 
                                     } else {
-                                        // If ROLE doesn't exist
                                         Toast.makeText(this, "Role not found", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    // Error handling
-                                    Toast.makeText(this, "Failed to fetch role", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Failed to fetch role: " + roleTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -244,6 +246,9 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+        } catch (Exception e) {
+            Toast.makeText(this, "Error during login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
 

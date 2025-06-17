@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.barberbookingapp.MainActivity;
 import com.example.barberbookingapp.R;
@@ -79,9 +80,19 @@ public class LoginFragment extends Fragment {
             String email = emailField.getText().toString();
             String password = passwordField.getText().toString();
 
-            //User login is done through a function in Main and the user's email and password are sent there
+            // Check if email and password are not empty
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Check if activity is not null before proceeding
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.loginUser( email,  password);
+            if (mainActivity != null) {
+                mainActivity.loginUser(email, password);
+            } else {
+                Toast.makeText(getContext(), "Error: Please try again", Toast.LENGTH_SHORT).show();
+            }
         });
 
 

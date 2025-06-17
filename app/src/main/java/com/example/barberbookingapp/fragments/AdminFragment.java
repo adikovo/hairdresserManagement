@@ -143,7 +143,8 @@ public class AdminFragment extends Fragment {
             builder.create().show();
         });
 
-        loadAppointments();
+        // Load appointments for the current hairdresser
+        loadHairdresserAppointments();
 
         return view;
     }
@@ -167,8 +168,8 @@ public class AdminFragment extends Fragment {
         });
     }
 
-    //Load all client appointments from Firebase
-    private void loadAppointments() {
+    //Load all client appointments from Firebase - keeping this for future use
+    private void loadAllAppointments() {
         //Create path to client appointments
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
         appointmentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -185,11 +186,53 @@ public class AdminFragment extends Fragment {
                 adminAppointmentsAdapter.notifyDataSetChanged();
             }
 
-
             //If reading the data failed, display an error message
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Load appointments for the currently logged-in hairdresser
+    private void loadHairdresserAppointments() {
+        // Get current user's username
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String currentUsername = snapshot.child("username").getValue(String.class);
+                if (currentUsername != null) {
+                    //Create path to client appointments and filter by hairdresser
+                    DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
+                    appointmentsRef.orderByChild("hairdresserUsername").equalTo(currentUsername)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    appointmentsList.clear();
+                                    for (DataSnapshot child : snapshot.getChildren()) {
+                                        Appointments appointment = child.getValue(Appointments.class);
+                                        if (appointment != null) {
+                                            appointmentsList.add(appointment);
+                                        }
+                                    }
+                                    //After loading the updated appointments, display them in RECVIEW
+                                    adminAppointmentsAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to load user data.", Toast.LENGTH_SHORT).show();
             }
         });
     }
