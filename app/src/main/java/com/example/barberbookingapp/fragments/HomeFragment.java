@@ -247,6 +247,9 @@ public class HomeFragment extends Fragment {
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
 
+            // Set minimum date to today
+            datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+
             // Disable holiday dates in the date picker
             if (selectedHairdresserHolidays != null && !selectedHairdresserHolidays.isEmpty()) {
                 datePickerDialog.getDatePicker().setOnDateChangedListener((view1, year, month, dayOfMonth) -> {
@@ -275,6 +278,36 @@ public class HomeFragment extends Fragment {
                 
                 if (!selectedDate.equals("No date selected") && !selectedHairdresser.equals("No hairdresser selected")) {
                     String dateTime = selectedDate + " " + selectedTime;
+                    
+                    // Check if the selected time is in the past
+                    try {
+                        // Get current date and time
+                        Calendar currentTime = Calendar.getInstance();
+                        
+                        // Parse the selected date and time
+                        String[] dateParts = selectedDate.split("-");
+                        String[] timeParts = selectedTime.split(":");
+                        
+                        // Create calendar object for selected date and time
+                        Calendar selectedDateTime = Calendar.getInstance();
+                        selectedDateTime.set(
+                            Integer.parseInt(dateParts[0]), // year
+                            Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                            Integer.parseInt(dateParts[2]), // day
+                            Integer.parseInt(timeParts[0]), // hour
+                            Integer.parseInt(timeParts[1])  // minute
+                        );
+                        
+                        // If selected time is in the past, show error
+                        if (selectedDateTime.before(currentTime)) {
+                            Toast.makeText(requireContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT).show();
+                            timeSpinner.setSelection(0); // Reset to default selection
+                            return;
+                        }
+                    } catch (Exception e) {
+                        Log.e("HomeFragment", "Error checking appointment time", e);
+                    }
+                    
                     if (selectedHairdresserAppointments != null && selectedHairdresserAppointments.contains(dateTime)) {
                         Toast.makeText(requireContext(), "Selected hairdresser is not available at this time", Toast.LENGTH_SHORT).show();
                     }
@@ -295,8 +328,36 @@ public class HomeFragment extends Fragment {
 
             if (selectedService != null && !selectedDate.equals("No date selected") && !selectedHairdresser.equals("No hairdresser selected")) {
                 String dateTime = selectedDate + " " + selectedTime;
-                if (mainActivity != null) {
-                    mainActivity.bookAppointment(selectedService, dateTime, selectedHairdresser);
+                
+                // Final validation before booking
+                Calendar now = Calendar.getInstance();
+                Calendar selectedDateTime = Calendar.getInstance();
+                
+                try {
+                    // Parse the selected date and time
+                    String[] dateParts = selectedDate.split("-");
+                    String[] timeParts = selectedTime.split(":");
+                    
+                    selectedDateTime.set(
+                        Integer.parseInt(dateParts[0]), // year
+                        Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                        Integer.parseInt(dateParts[2]), // day
+                        Integer.parseInt(timeParts[0]), // hour
+                        Integer.parseInt(timeParts[1])  // minute
+                    );
+                    
+                    // If selected time is in the past, show error
+                    if (selectedDateTime.before(now)) {
+                        Toast.makeText(getContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    if (mainActivity != null) {
+                        mainActivity.bookAppointment(selectedService, dateTime, selectedHairdresser);
+                    }
+                } catch (Exception e) {
+                    Log.e("HomeFragment", "Error parsing date/time", e);
+                    Toast.makeText(getContext(), "Invalid date or time format", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getContext(), "Please select all required fields.", Toast.LENGTH_SHORT).show();
