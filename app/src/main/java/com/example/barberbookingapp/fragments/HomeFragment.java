@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-
 // HomeFragment: Allows clients to book appointments at the hair salon.
 // - Displays a welcome message with the client's name.
 // - Shows the latest announcement from the salon.
@@ -102,8 +101,8 @@ public class HomeFragment extends Fragment {
         hairdresserSpinner = view.findViewById(R.id.hairdresser_spinner);
         selectedDateTimeText = view.findViewById(R.id.selected_datetime_text);
 
-        //Display the fragment title
-        //Shows the name of the connected client along with the Welcome back message
+        // Display the fragment title
+        // Shows the name of the connected client along with the Welcome back message
         TextView welcomeText = view.findViewById(R.id.welcome_text);
         if (mainActivity != null) {
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -117,12 +116,12 @@ public class HomeFragment extends Fragment {
             });
         }
 
-
-        //Get reference to the announcements board path
-        //If there is a message, display the updated message
-        //If there isn't, don't display the board
+        // Get reference to the announcements board path
+        // If there is a message, display the updated message
+        // If there isn't, don't display the board
         TextView announcementText = view.findViewById(R.id.announcement_text);
-        DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements").child("current_announcement");
+        DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements")
+                .child("current_announcement");
 
         announcementsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -145,8 +144,7 @@ public class HomeFragment extends Fragment {
         ArrayAdapter<CharSequence> serviceAdapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.barber_services,
-                android.R.layout.simple_spinner_item
-        );
+                android.R.layout.simple_spinner_item);
         serviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         serviceSpinner.setAdapter(serviceAdapter);
 
@@ -155,8 +153,7 @@ public class HomeFragment extends Fragment {
         ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.default_times,
-                android.R.layout.simple_spinner_item
-        );
+                android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
 
@@ -183,10 +180,10 @@ public class HomeFragment extends Fragment {
                         String email = userSnap.child("email").getValue(String.class);
                         String phone = userSnap.child("phone").getValue(String.class);
                         String role = userSnap.child("role").getValue(String.class);
-                        
+
                         // Include both hairdressers and admin users
-                        if (username != null && email != null && phone != null && role != null && 
-                            (role.equals("hair dresser") || role.equals("admin"))) {
+                        if (username != null && email != null && phone != null && role != null &&
+                                (role.equals("hair dresser") || role.equals("admin"))) {
                             Worker worker = new Worker(username, email, phone, role, new ArrayList<>());
                             worker.setId(userSnap.getKey());
                             availableHairdressers.add(worker);
@@ -198,8 +195,7 @@ public class HomeFragment extends Fragment {
                     ArrayAdapter<String> hairdresserAdapter = new ArrayAdapter<>(
                             requireContext(),
                             android.R.layout.simple_spinner_item,
-                            hairdresserNames
-                    );
+                            hairdresserNames);
                     hairdresserAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     hairdresserSpinner.setAdapter(hairdresserAdapter);
 
@@ -217,7 +213,8 @@ public class HomeFragment extends Fragment {
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> parent) {}
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
                     });
                 } catch (Exception e) {
                     Log.e("HomeFragment", "Error loading hairdressers", e);
@@ -244,8 +241,7 @@ public class HomeFragment extends Fragment {
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
+                    calendar.get(Calendar.DAY_OF_MONTH));
 
             // Set minimum date to today
             datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
@@ -256,7 +252,8 @@ public class HomeFragment extends Fragment {
                     String date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
                     if (selectedHairdresserHolidays.contains(date)) {
                         datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setEnabled(false);
-                        Toast.makeText(requireContext(), "This date is a holiday for the selected hairdresser", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "This date is a holiday for the selected hairdresser",
+                                Toast.LENGTH_SHORT).show();
                     } else {
                         datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setEnabled(true);
                     }
@@ -270,52 +267,57 @@ public class HomeFragment extends Fragment {
         timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) return; // Skip if no time selected
-                
+                if (position == 0)
+                    return; // Skip if no time selected
+
                 String selectedTime = parent.getItemAtPosition(position).toString();
                 String selectedDate = selectedDateTimeText.getText().toString();
                 String selectedHairdresser = hairdresserSpinner.getSelectedItem().toString();
-                
-                if (!selectedDate.equals("No date selected") && !selectedHairdresser.equals("No hairdresser selected")) {
+
+                if (!selectedDate.equals("No date selected")
+                        && !selectedHairdresser.equals("No hairdresser selected")) {
                     String dateTime = selectedDate + " " + selectedTime;
-                    
+
                     // Check if the selected time is in the past
                     try {
                         // Get current date and time
                         Calendar currentTime = Calendar.getInstance();
-                        
+
                         // Parse the selected date and time
                         String[] dateParts = selectedDate.split("-");
                         String[] timeParts = selectedTime.split(":");
-                        
+
                         // Create calendar object for selected date and time
                         Calendar selectedDateTime = Calendar.getInstance();
                         selectedDateTime.set(
-                            Integer.parseInt(dateParts[0]), // year
-                            Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                            Integer.parseInt(dateParts[2]), // day
-                            Integer.parseInt(timeParts[0]), // hour
-                            Integer.parseInt(timeParts[1])  // minute
+                                Integer.parseInt(dateParts[0]), // year
+                                Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                                Integer.parseInt(dateParts[2]), // day
+                                Integer.parseInt(timeParts[0]), // hour
+                                Integer.parseInt(timeParts[1]) // minute
                         );
-                        
+
                         // If selected time is in the past, show error
                         if (selectedDateTime.before(currentTime)) {
-                            Toast.makeText(requireContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT)
+                                    .show();
                             timeSpinner.setSelection(0); // Reset to default selection
                             return;
                         }
                     } catch (Exception e) {
                         Log.e("HomeFragment", "Error checking appointment time", e);
                     }
-                    
+
                     if (selectedHairdresserAppointments != null && selectedHairdresserAppointments.contains(dateTime)) {
-                        Toast.makeText(requireContext(), "Selected hairdresser is not available at this time", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Selected hairdresser is not available at this time",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // Set up book appointment button
@@ -326,34 +328,37 @@ public class HomeFragment extends Fragment {
             String selectedTime = timeSpinner.getSelectedItem().toString();
             String selectedDate = selectedDateTimeText.getText().toString();
 
-            if (selectedService != null && !selectedDate.equals("No date selected") && !selectedHairdresser.equals("No hairdresser selected")) {
+            if (selectedService != null && !selectedDate.equals("No date selected")
+                    && !selectedHairdresser.equals("No hairdresser selected")) {
                 String dateTime = selectedDate + " " + selectedTime;
-                
+
                 // Final validation before booking
                 Calendar now = Calendar.getInstance();
                 Calendar selectedDateTime = Calendar.getInstance();
-                
+
                 try {
                     // Parse the selected date and time
                     String[] dateParts = selectedDate.split("-");
                     String[] timeParts = selectedTime.split(":");
-                    
+
                     selectedDateTime.set(
-                        Integer.parseInt(dateParts[0]), // year
-                        Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                        Integer.parseInt(dateParts[2]), // day
-                        Integer.parseInt(timeParts[0]), // hour
-                        Integer.parseInt(timeParts[1])  // minute
+                            Integer.parseInt(dateParts[0]), // year
+                            Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                            Integer.parseInt(dateParts[2]), // day
+                            Integer.parseInt(timeParts[0]), // hour
+                            Integer.parseInt(timeParts[1]) // minute
                     );
-                    
+
                     // If selected time is in the past, show error
                     if (selectedDateTime.before(now)) {
                         Toast.makeText(getContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    
+
                     if (mainActivity != null) {
                         mainActivity.bookAppointment(selectedService, dateTime, selectedHairdresser);
+                        // Reset input fields after booking
+                        resetInputFields();
                     }
                 } catch (Exception e) {
                     Log.e("HomeFragment", "Error parsing date/time", e);
@@ -392,7 +397,8 @@ public class HomeFragment extends Fragment {
         }
 
         // Fetch holidays for the specific hairdresser
-        DatabaseReference holidaysRef = FirebaseDatabase.getInstance().getReference("holidays").child(hairdresserUsername);
+        DatabaseReference holidaysRef = FirebaseDatabase.getInstance().getReference("holidays")
+                .child(hairdresserUsername);
         holidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -403,8 +409,9 @@ public class HomeFragment extends Fragment {
                         selectedHairdresserHolidays.add(holiday);
                     }
                 }
-                Log.d("HomeFragment", "Loaded holidays for " + hairdresserUsername + ": " + selectedHairdresserHolidays);
-                
+                Log.d("HomeFragment",
+                        "Loaded holidays for " + hairdresserUsername + ": " + selectedHairdresserHolidays);
+
                 // After loading personal holidays, load general holidays
                 DatabaseReference generalHolidaysRef = FirebaseDatabase.getInstance().getReference("general_holidays");
                 generalHolidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -416,7 +423,8 @@ public class HomeFragment extends Fragment {
                                 selectedHairdresserHolidays.add(holiday);
                             }
                         }
-                        Log.d("HomeFragment", "Loaded general holidays. Total holidays: " + selectedHairdresserHolidays);
+                        Log.d("HomeFragment",
+                                "Loaded general holidays. Total holidays: " + selectedHairdresserHolidays);
                     }
 
                     @Override
@@ -445,7 +453,8 @@ public class HomeFragment extends Fragment {
                                 selectedHairdresserAppointments.add(appointment.getDateTime());
                             }
                         }
-                        Log.d("HomeFragment", "Loaded appointments for " + hairdresserUsername + ": " + selectedHairdresserAppointments);
+                        Log.d("HomeFragment", "Loaded appointments for " + hairdresserUsername + ": "
+                                + selectedHairdresserAppointments);
                     }
 
                     @Override
@@ -453,5 +462,14 @@ public class HomeFragment extends Fragment {
                         Log.e("HomeFragment", "Failed to load appointments", error.toException());
                     }
                 });
+    }
+
+    private void resetInputFields() {
+
+        serviceSpinner.setSelection(0);
+        hairdresserSpinner.setSelection(0);
+        selectedDateTimeText.setText("No date selected");
+        Spinner timeSpinner = requireView().findViewById(R.id.time_spinner);
+        timeSpinner.setSelection(0);
     }
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 // Fragment for displaying all appointments for the current user
@@ -71,76 +73,124 @@ public class AppointmentsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_appointments, container, false);
 
-        //Get path to user in Firebase and display their appointments accordingly
+        // Initialize RecyclerView with empty adapter first
+        RecyclerView recyclerView = view.findViewById(R.id.appointments_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        AppointmentsAdapter adapter = new AppointmentsAdapter(requireContext(), new ArrayList<>(), null);
+        recyclerView.setAdapter(adapter);
+
+        // Get path to user in Firebase and display their appointments accordingly
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        appointmentsRef.orderByChild("clientId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Appointments> appointments = new ArrayList<>();
-                for (DataSnapshot appointmentSnapshot : snapshot.getChildren()) {
-                    Appointments appointment = appointmentSnapshot.getValue(Appointments.class);
-                    if (appointment != null) {
-                        appointments.add(appointment);
-                    }
-                }
+        // Get current date for comparison
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
 
-                // After the list is ready, update the RECVIEW
-                updateRecyclerView(appointments);
-            }
+        appointmentsRef.orderByChild("clientId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Appointments> appointments = new ArrayList<>();
+                        for (DataSnapshot appointmentSnapshot : snapshot.getChildren()) {
+                            Appointments appointment = appointmentSnapshot.getValue(Appointments.class);
+                            if (appointment != null) {
+                                // Parse and check the appointment date
+                                try {
+                                    String dateTime = appointment.getDateTime();
+                                    String[] dateTimeParts = dateTime.split(" ");
+                                    String[] dateParts = dateTimeParts[0].split("-");
+                                    String[] timeParts = dateTimeParts[1].split(":");
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
+                                    Calendar appointmentDate = Calendar.getInstance();
+                                    appointmentDate.set(
+                                            Integer.parseInt(dateParts[2]), // year
+                                            Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                                            Integer.parseInt(dateParts[0]), // day
+                                            Integer.parseInt(timeParts[0]), // hour
+                                            Integer.parseInt(timeParts[1]) // minute
+                                    );
 
-
-            private void updateRecyclerView(List<Appointments> appointmentsList) {
-                RecyclerView recyclerView = requireView().findViewById(R.id.appointments_recycler_view);
-                recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-                AppointmentsAdapter adapter = createAppointmentsAdapter(appointmentsList);
-                recyclerView.setAdapter(adapter);
-            }
-
-            private AppointmentsAdapter createAppointmentsAdapter(List<Appointments> appointmentsList) {
-                return new AppointmentsAdapter(requireContext(), appointmentsList, appointment -> {
-                    cancelAppointment(appointment, appointmentsList);
-                });
-            }
-
-            //Function to cancel an appointment
-            private void cancelAppointment(Appointments appointment, List<Appointments> appointmentsList) {
-                //Change the format to reach the correct path of the appointment
-                DatabaseReference appointmentRef = FirebaseDatabase.getInstance()
-                        .getReference("appointments")
-                        .child(appointment.getDateTime().replace(" ", "_").replace(":", "-"));
-
-                //Delete from Firebase and the list (if deletion was successful)
-                appointmentRef.removeValue().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Remove the appointment from the list
-                        appointmentsList.remove(appointment);
-
-                        // Update the adapter
-                        RecyclerView recyclerView = requireView().findViewById(R.id.appointments_recycler_view);
-                        AppointmentsAdapter adapter = (AppointmentsAdapter) recyclerView.getAdapter();
-                        if (adapter != null) {
-                            adapter.notifyDataSetChanged();
+                                    // Only add if the appointment is today or in the future
+                                    if (!appointmentDate.before(today)) {
+                                        appointments.add(appointment);
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("AppointmentsFragment", "Error parsing date: " + appointment.getDateTime(),
+                                            e);
+                                }
+                            }
                         }
 
-                        // Show success message to user
-                        Toast.makeText(requireContext(), "The appointment has been canceled! remove it from the calendar.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Handle failure case
-                        Toast.makeText(requireContext(), "Failed to cancel appointment", Toast.LENGTH_SHORT).show();
+                        // After the list is ready, update the RECVIEW
+                        updateRecyclerView(appointments);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireContext(), "Failed to load appointments: " + error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-        });
 
         return view;
+    }
+
+    private void updateRecyclerView(List<Appointments> appointmentsList) {
+        if (!isAdded())
+            return; // Check if fragment is still attached
+        RecyclerView recyclerView = requireView().findViewById(R.id.appointments_recycler_view);
+        AppointmentsAdapter adapter = createAppointmentsAdapter(appointmentsList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private AppointmentsAdapter createAppointmentsAdapter(List<Appointments> appointmentsList) {
+        return new AppointmentsAdapter(requireContext(), appointmentsList, appointment -> {
+            cancelAppointment(appointment, appointmentsList);
+        });
+    }
+
+    // Function to cancel an appointment
+    private void cancelAppointment(Appointments appointment, List<Appointments> appointmentsList) {
+        if (!isAdded())
+            return; // Check if fragment is still attached
+
+        // Change the format to reach the correct path of the appointment
+        DatabaseReference appointmentRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(appointment.getDateTime().replace(" ", "_").replace(":", "-"));
+
+        // Delete from Firebase and the list (if deletion was successful)
+        appointmentRef.removeValue().addOnCompleteListener(task -> {
+            if (!isAdded())
+                return; // Check if fragment is still attached
+
+            if (task.isSuccessful()) {
+                // Remove the appointment from the list
+                appointmentsList.remove(appointment);
+
+                // Update the adapter
+                RecyclerView recyclerView = requireView().findViewById(R.id.appointments_recycler_view);
+                AppointmentsAdapter adapter = (AppointmentsAdapter) recyclerView.getAdapter();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+
+                // Show success message to user
+                Toast.makeText(requireContext(),
+                        "The appointment has been canceled! remove it from the calendar.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Handle failure case
+                Toast.makeText(requireContext(), "Failed to cancel appointment", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 }

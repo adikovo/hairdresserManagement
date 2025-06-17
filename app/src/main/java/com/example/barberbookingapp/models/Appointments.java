@@ -1,32 +1,32 @@
 package com.example.barberbookingapp.models;
 
 // Model class for an appointment
-// Contains fields for service type, user ID, status, date/time, and hair dresser username
+// Contains fields for service type, user ID, date/time, and hair dresser username
 
 public class Appointments {
     private String serviceType;
     private String clientId;
-    private String status;
     private String dateTime;
     private String hairdresserUsername; // Username of the hairdresser for this appointment
+    private boolean personalAppointment; // Flag to indicate if this is a personal appointment
 
-    public Appointments() {}
-
-
-    /*
-    Class for representing an appointment in Firebase
-    Relevant fields are: client ID, service type, date and time
-    The client ID is created from client creation and the key received from Firebase
-    * */
-
-    public Appointments(String serviceType, String clientId, String status, String dateTime, String hairdresserUsername) {
-        this.serviceType = serviceType;
-        this.clientId = clientId;
-        this.status = status;
-        this.dateTime = dateTime;
-        this.hairdresserUsername = hairdresserUsername;
+    public Appointments() {
     }
 
+    /*
+     * Class for representing an appointment in Firebase
+     * Relevant fields are: client ID, service type, date and time
+     * The client ID is created from client creation and the key received from
+     * Firebase
+     */
+
+    public Appointments(String serviceType, String clientId, String dateTime, String hairdresserUsername) {
+        this.serviceType = serviceType;
+        this.clientId = clientId;
+        this.dateTime = dateTime;
+        this.hairdresserUsername = hairdresserUsername;
+        this.personalAppointment = false;
+    }
 
     public String getServiceType() {
         return serviceType;
@@ -44,14 +44,6 @@ public class Appointments {
         this.clientId = clientId;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getDateTime() {
         return dateTime;
     }
@@ -67,5 +59,12 @@ public class Appointments {
     public void setHairdresserUsername(String hairdresserUsername) {
         this.hairdresserUsername = hairdresserUsername;
     }
-}
 
+    public boolean isPersonalAppointment() {
+        return personalAppointment;
+    }
+
+    public void setPersonalAppointment(boolean personalAppointment) {
+        this.personalAppointment = personalAppointment;
+    }
+}

@@ -58,7 +58,7 @@ public class HolidaysAdapter extends RecyclerView.Adapter<HolidaysAdapter.Holida
         HolidayItem holiday = holidaysList.get(position);
         holder.dateText.setText(holiday.getDate());
         holder.typeText.setText(holiday.isGeneral() ? "General Holiday" : "Personal Holiday");
-        
+
         // Set different background for general holidays
         if (holiday.isGeneral()) {
             holder.itemView.setBackgroundResource(R.drawable.general_holiday_bg);
@@ -74,30 +74,37 @@ public class HolidaysAdapter extends RecyclerView.Adapter<HolidaysAdapter.Holida
                     // Remove from general holidays
                     DatabaseReference generalHolidaysRef = holidaysRef.getRoot().child("general_holidays");
                     generalHolidaysRef.child(holiday.getDate()).removeValue()
-                        .addOnSuccessListener(aVoid -> {
-                            // Remove from all hairdressers
-                            removeHolidayFromAllHairdressers(holiday.getDate());
-                            // Remove from the list
-                            holidaysList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, holidaysList.size());
-                            Toast.makeText(v.getContext(), "General holiday removed successfully", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(v.getContext(), "Failed to remove general holiday", Toast.LENGTH_SHORT).show();
-                        });
+                            .addOnSuccessListener(aVoid -> {
+                                // Remove from all hairdressers
+                                removeHolidayFromAllHairdressers(holiday.getDate());
+                                // Remove from the list
+                                if (position >= 0 && position < holidaysList.size()) {
+                                    holidaysList.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyItemRangeChanged(position, holidaysList.size());
+                                }
+                                Toast.makeText(v.getContext(), "General holiday removed successfully",
+                                        Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(v.getContext(), "Failed to remove general holiday", Toast.LENGTH_SHORT)
+                                        .show();
+                            });
                 } else {
                     // Remove personal holiday
                     holidaysRef.child(holiday.getDate()).removeValue()
-                        .addOnSuccessListener(aVoid -> {
-                            holidaysList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, holidaysList.size());
-                            Toast.makeText(v.getContext(), "Holiday removed successfully", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(v.getContext(), "Failed to remove holiday", Toast.LENGTH_SHORT).show();
-                        });
+                            .addOnSuccessListener(aVoid -> {
+                                if (position >= 0 && position < holidaysList.size()) {
+                                    holidaysList.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyItemRangeChanged(position, holidaysList.size());
+                                }
+                                Toast.makeText(v.getContext(), "Holiday removed successfully", Toast.LENGTH_SHORT)
+                                        .show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(v.getContext(), "Failed to remove holiday", Toast.LENGTH_SHORT).show();
+                            });
                 }
             });
         } else {
@@ -107,25 +114,26 @@ public class HolidaysAdapter extends RecyclerView.Adapter<HolidaysAdapter.Holida
 
     private void removeHolidayFromAllHairdressers(String date) {
         DatabaseReference usersRef = holidaysRef.getRoot().child("users");
-        usersRef.orderByChild("role").equalTo("hair dresser").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                for (com.google.firebase.database.DataSnapshot userSnap : snapshot.getChildren()) {
-                    String username = userSnap.child("username").getValue(String.class);
-                    if (username != null) {
-                        DatabaseReference hairdresserHolidaysRef = holidaysRef.getRoot()
-                            .child("holidays")
-                            .child(username);
-                        hairdresserHolidaysRef.child(date).removeValue();
+        usersRef.orderByChild("role").equalTo("hair dresser")
+                .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
+                        for (com.google.firebase.database.DataSnapshot userSnap : snapshot.getChildren()) {
+                            String username = userSnap.child("username").getValue(String.class);
+                            if (username != null) {
+                                DatabaseReference hairdresserHolidaysRef = holidaysRef.getRoot()
+                                        .child("holidays")
+                                        .child(username);
+                                hairdresserHolidaysRef.child(date).removeValue();
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
-                // Handle error
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
+                        // Handle error
+                    }
+                });
     }
 
     @Override

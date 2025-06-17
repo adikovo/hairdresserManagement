@@ -71,7 +71,7 @@ public class Worker {
     }
 
     public List<Appointments> getAppointments() {
-        return appointments;
+        return appointments != null ? appointments : new ArrayList<>();
     }
 
     public void setAppointments(List<Appointments> appointments) {
@@ -79,7 +79,7 @@ public class Worker {
     }
 
     public List<String> getHolidays() {
-        return holidays;
+        return holidays != null ? holidays : new ArrayList<>();
     }
 
     public void setHolidays(List<String> holidays) {
@@ -87,16 +87,21 @@ public class Worker {
     }
 
     public void addHoliday(String date) {
+        if (this.holidays == null) {
+            this.holidays = new ArrayList<>();
+        }
         if (!this.holidays.contains(date)) {
             this.holidays.add(date);
         }
     }
 
     public void removeHoliday(String date) {
-        this.holidays.remove(date);
+        if (this.holidays != null) {
+            this.holidays.remove(date);
+        }
     }
 
     public boolean isHoliday(String date) {
         return this.holidays != null && this.holidays.contains(date);
     }
-} 
+}

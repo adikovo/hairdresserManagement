@@ -102,8 +102,14 @@ public class WorkersFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 workerList.clear();
                 for (DataSnapshot userSnap : snapshot.getChildren()) {
-                    Worker worker = userSnap.getValue(Worker.class);
-                    if (worker != null) {
+                    String username = userSnap.child("username").getValue(String.class);
+                    String email = userSnap.child("email").getValue(String.class);
+                    String phone = userSnap.child("phone").getValue(String.class);
+                    String role = userSnap.child("role").getValue(String.class);
+
+                    if (username != null && email != null && phone != null && role != null) {
+                        Worker worker = new Worker(username, email, phone, role, new ArrayList<>());
+                        worker.setId(userSnap.getKey());
                         workerList.add(worker);
                     }
                 }
@@ -128,41 +134,48 @@ public class WorkersFragment extends Fragment {
 
     private void deleteWorker(Worker worker, int position) {
         // Remove from users
-        usersRef.orderByChild("email").equalTo(worker.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    return;
-                }
-                
-                for (DataSnapshot userSnap : snapshot.getChildren()) {
-                    userSnap.getRef().removeValue()
-                        .addOnSuccessListener(aVoid -> {
-                            // Remove from hairdressers
-                            hairdressersRef.orderByChild("email").equalTo(worker.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (!snapshot.exists()) {
-                                        return;
-                                    }
-                                    
-                                    for (DataSnapshot hairdresserSnap : snapshot.getChildren()) {
-                                        hairdresserSnap.getRef().removeValue()
-                                            .addOnSuccessListener(aVoid1 -> {
-                                                workerList.remove(position);
-                                                workerAdapter.notifyItemRemoved(position);
-                                                Toast.makeText(getContext(), "Worker deleted", Toast.LENGTH_SHORT).show();
-                                            });
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {}
-                            });
-                        });
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        usersRef.orderByChild("email").equalTo(worker.getEmail())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            return;
+                        }
+
+                        for (DataSnapshot userSnap : snapshot.getChildren()) {
+                            userSnap.getRef().removeValue()
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Remove from hairdressers
+                                        hairdressersRef.orderByChild("email").equalTo(worker.getEmail())
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (!snapshot.exists()) {
+                                                            return;
+                                                        }
+
+                                                        for (DataSnapshot hairdresserSnap : snapshot.getChildren()) {
+                                                            hairdresserSnap.getRef().removeValue()
+                                                                    .addOnSuccessListener(aVoid1 -> {
+                                                                        workerList.remove(position);
+                                                                        workerAdapter.notifyItemRemoved(position);
+                                                                        Toast.makeText(getContext(), "Worker deleted",
+                                                                                Toast.LENGTH_SHORT).show();
+                                                                    });
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                    }
+                                                });
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 }

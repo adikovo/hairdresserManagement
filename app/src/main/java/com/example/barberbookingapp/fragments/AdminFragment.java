@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Admin fragment for managing the hair salon system
-// Allows admin to view and manage appointments, users, inventory, and holidays
+// Allows admin to view and manage appointments, users, and holidays
 
 public class AdminFragment extends Fragment {
 
@@ -42,6 +42,7 @@ public class AdminFragment extends Fragment {
     private AdminAppointmentsAdapter adminAppointmentsAdapter;
     private List<Appointments> appointmentsList;
     private Button workersButton;
+    private Button postAnnouncementButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public class AdminFragment extends Fragment {
 
         // Find the workers button
         workersButton = view.findViewById(R.id.workers_button);
-        
+        postAnnouncementButton = view.findViewById(R.id.post_announcement_button);
+
         // Check user role and set button visibility
         checkUserRole();
 
@@ -71,24 +73,18 @@ public class AdminFragment extends Fragment {
             navController.navigate(R.id.action_adminFragment_to_workersFragment);
         });
 
-        //When clicking the salon holidays button, the barber will navigate to the relevant fragment
+        // When clicking the salon holidays button, the barber will navigate to the
+        // relevant fragment
         Button HolidaysFragmentButton = view.findViewById(R.id.manage_holidays_button);
         HolidaysFragmentButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_adminFragment_to_holidaysFragment);
         });
 
-        //When clicking the salon equipment inventory button, the barber will navigate to the relevant fragment
-        Button inventoryButton = view.findViewById(R.id.inventory_button);
-        inventoryButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_adminFragment_to_inventoryFragment);
-        });
-
-        //When clicking the edit announcement button, a dialog will open with the current announcement
-        //This way the hair dresser can update it whenever they want
-        //The announcement is stored in Firebase
-        Button postAnnouncementButton = view.findViewById(R.id.post_announcement_button);
+        // When clicking the edit announcement button, a dialog will open with the
+        // current announcement
+        // This way the hair dresser can update it whenever they want
+        // The announcement is stored in Firebase
         postAnnouncementButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setTitle("Edit Announcement");
@@ -98,7 +94,8 @@ public class AdminFragment extends Fragment {
             EditText announcementEditText = dialogView.findViewById(R.id.announcement_text_input);
 
             // Reference to the announcement - there is only one
-            DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements").child("current_announcement");
+            DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements")
+                    .child("current_announcement");
 
             // Read the current announcement and display it in the dialog
             announcementsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -123,13 +120,15 @@ public class AdminFragment extends Fragment {
                 String updatedText = announcementEditText.getText().toString().trim();
                 if (!updatedText.isEmpty()) {
                     // Update the announcement in Firebase
-                    //Save the new announcement in Firebase instead of the previous one (not in addition)
+                    // Save the new announcement in Firebase instead of the previous one (not in
+                    // addition)
                     announcementsRef.setValue(updatedText)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(requireContext(), "Announcement updated", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(requireContext(), "Failed to update announcement", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Failed to update announcement",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } else {
@@ -152,25 +151,35 @@ public class AdminFragment extends Fragment {
     private void checkUserRole() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-        
+
         userRef.child("role").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String role = snapshot.getValue(String.class);
-                workersButton.setVisibility("admin".equals(role) ? VISIBLE : INVISIBLE);
+                boolean isAdmin = "admin".equals(role);
+                workersButton.setVisibility(isAdmin ? VISIBLE : INVISIBLE);
+                postAnnouncementButton.setVisibility(isAdmin ? VISIBLE : INVISIBLE);
+
+                // Load different appointments based on role
+                if (isAdmin) {
+                    loadAllAppointments();
+                } else {
+                    loadHairdresserAppointments();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 workersButton.setVisibility(INVISIBLE);
+                postAnnouncementButton.setVisibility(INVISIBLE);
                 Toast.makeText(requireContext(), "Failed to check user role", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    //Load all client appointments from Firebase - keeping this for future use
+    // Load all client appointments from Firebase
     private void loadAllAppointments() {
-        //Create path to client appointments
+        // Create path to client appointments
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
         appointmentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -179,14 +188,43 @@ public class AdminFragment extends Fragment {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Appointments appointment = child.getValue(Appointments.class);
                     if (appointment != null) {
-                        appointmentsList.add(appointment);
+                        // Get current user's username to compare
+                        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("users")
+                                .child(currentUserId);
+
+                        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                String currentUsername = userSnapshot.child("username").getValue(String.class);
+                                String appointmentHairdresser = appointment.getHairdresserUsername();
+
+                                // Only compare if both values are not null
+                                boolean isPersonalAppointment = currentUsername != null &&
+                                        appointmentHairdresser != null &&
+                                        currentUsername.equals(appointmentHairdresser);
+
+                                appointment.setPersonalAppointment(isPersonalAppointment);
+
+                                // If it's not a personal appointment, set the hairdresser username
+                                if (!isPersonalAppointment && appointmentHairdresser != null) {
+                                    appointment.setHairdresserUsername(appointmentHairdresser);
+                                }
+
+                                appointmentsList.add(appointment);
+                                adminAppointmentsAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(requireContext(), "Failed to load user data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
-                //After loading the updated appointments, display them in RECVIEW
-                adminAppointmentsAdapter.notifyDataSetChanged();
             }
 
-            //If reading the data failed, display an error message
+            // If reading the data failed, display an error message
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT).show();
@@ -194,18 +232,18 @@ public class AdminFragment extends Fragment {
         });
     }
 
-    //Load appointments for the currently logged-in hairdresser
+    // Load appointments for the currently logged-in hairdresser
     private void loadHairdresserAppointments() {
         // Get current user's username
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-        
+
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String currentUsername = snapshot.child("username").getValue(String.class);
                 if (currentUsername != null) {
-                    //Create path to client appointments and filter by hairdresser
+                    // Create path to client appointments and filter by hairdresser
                     DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
                     appointmentsRef.orderByChild("hairdresserUsername").equalTo(currentUsername)
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -218,13 +256,14 @@ public class AdminFragment extends Fragment {
                                             appointmentsList.add(appointment);
                                         }
                                     }
-                                    //After loading the updated appointments, display them in RECVIEW
+                                    // After loading the updated appointments, display them in RECVIEW
                                     adminAppointmentsAdapter.notifyDataSetChanged();
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT)
+                                            .show();
                                 }
                             });
                 }

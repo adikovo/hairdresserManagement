@@ -69,17 +69,17 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
     }
+
     private FirebaseAuth mAuth;
 
-
-    //Function for booking an appointment for a client
+    // Function for booking an appointment for a client
     public void bookAppointment(String serviceType, String dateTime, String hairdresserUsername) {
         // Get the current user's key
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Appointments appointment = new Appointments(serviceType, userId, "pending", dateTime, hairdresserUsername);
+        Appointments appointment = new Appointments(serviceType, userId, dateTime, hairdresserUsername);
 
-        //Create path to Firebase
+        // Create path to Firebase
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments");
 
         // Unique key for the appointment
@@ -103,14 +103,12 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
-
-    //Functions for adding the event to calendar
+    // Functions for adding the event to calendar
     private void addAppointmentToCalendar(String title, String location, long startTime, long endTime) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_CALENDAR}, 100);
+                    new String[] { Manifest.permission.WRITE_CALENDAR }, 100);
             return;
         }
 
@@ -127,13 +125,12 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
         if (uri != null) {
-            //Toast.makeText(this, "Appointment added to the calendar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Appointment added to the calendar", Toast.LENGTH_SHORT).show();
         } else {
             Log.e("CalendarDebug", "Failed to add event to calendar");
         }
 
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -171,12 +168,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-    //Function that receives the user's key and returns the username
-    //If no username is found, return GUEST
+    // Function that receives the user's key and returns the username
+    // If no username is found, return GUEST
     public Task<String> fetchUsername(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         TaskCompletionSource<String> taskCompletionSource = new TaskCompletionSource<>();
@@ -200,10 +193,10 @@ public class MainActivity extends AppCompatActivity {
         return taskCompletionSource.getTask();
     }
 
-
-    //User login function
-    //Receives email and password and checks in Firebase if the user exists
-    //If exists, checks the ROLE to determine if they are a barber or client and directs them to the appropriate fragment
+    // User login function
+    // Receives email and password and checks in Firebase if the user exists
+    // If exists, checks the ROLE to determine if they are a barber or client and
+    // directs them to the appropriate fragment
     public void loginUser(String email, String password) {
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -212,47 +205,50 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        if (user != null) {
-                            String userId = user.getUid();
-                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user != null) {
+                                String userId = user.getUid();
+                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                                        .child(userId);
 
-                            //Check the ROLE
-                            userRef.child("role").get().addOnCompleteListener(roleTask -> {
-                                if (roleTask.isSuccessful()) {
-                                    DataSnapshot dataSnapshot = roleTask.getResult();
-                                    if (dataSnapshot.exists()) {
-                                        String role = dataSnapshot.getValue(String.class);
-                                        if (role != null) {
-                                            if ("client".equals(role)) {
-                                                navigateToHomeFragment();
-                                            } else if ("hair dresser".equals(role) || "admin".equals(role)) {
-                                                navigateToAdminFragment();
-                                            } else {
-                                                Toast.makeText(this, "Invalid user role", Toast.LENGTH_SHORT).show();
+                                // Check the ROLE
+                                userRef.child("role").get().addOnCompleteListener(roleTask -> {
+                                    if (roleTask.isSuccessful()) {
+                                        DataSnapshot dataSnapshot = roleTask.getResult();
+                                        if (dataSnapshot.exists()) {
+                                            String role = dataSnapshot.getValue(String.class);
+                                            if (role != null) {
+                                                if ("client".equals(role)) {
+                                                    navigateToHomeFragment();
+                                                } else if ("hair dresser".equals(role) || "admin".equals(role)) {
+                                                    navigateToAdminFragment();
+                                                } else {
+                                                    Toast.makeText(this, "Invalid user role", Toast.LENGTH_SHORT)
+                                                            .show();
+                                                }
                                             }
-                                        } 
+                                        } else {
+                                            Toast.makeText(this, "Role not found", Toast.LENGTH_SHORT).show();
+                                        }
                                     } else {
-                                        Toast.makeText(this, "Role not found", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this,
+                                                "Failed to fetch role: " + roleTask.getException().getMessage(),
+                                                Toast.LENGTH_SHORT).show();
                                     }
-                                } else {
-                                    Toast.makeText(this, "Failed to fetch role: " + roleTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                });
+                            }
+                        } else {
+                            Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
         } catch (Exception e) {
             Toast.makeText(this, "Error during login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    //Navigation functions to appropriate fragments
+    // Navigation functions to appropriate fragments
     private void navigateToAdminFragment() {
         NavController navController = Navigation.findNavController(this, R.id.fragmentContainerView);
         navController.navigate(R.id.action_loginFragment_to_adminFragment);
@@ -268,12 +264,12 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.action_registerFragment_to_loginFragment);
     }
 
-
-
-    //Function for registering a new user
-    public void registerUser(String email, String password, String confirmPassword, String username, String phone, String role) {
+    // Function for registering a new user
+    public void registerUser(String email, String password, String confirmPassword, String username, String phone,
+            String role) {
         // Check if all fields are filled
-        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || username.isEmpty() || phone.isEmpty() || role.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || username.isEmpty() || phone.isEmpty()
+                || role.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -303,18 +299,22 @@ public class MainActivity extends AppCompatActivity {
                                                     .child(userId)
                                                     .setValue(newUser)
                                                     .addOnSuccessListener(aVoid1 -> {
-                                                        Toast.makeText(this, "Hairdresser registered successfully", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(this, "Hairdresser registered successfully",
+                                                                Toast.LENGTH_SHORT).show();
                                                         // Navigate back to WorkersFragment if we came from there
-                                                        NavController navController = Navigation.findNavController(this, R.id.fragmentContainerView);
-                                                        navController.navigate(R.id.action_registerFragment_to_workersFragment);
+                                                        NavController navController = Navigation.findNavController(this,
+                                                                R.id.fragmentContainerView);
+                                                        navController.navigate(
+                                                                R.id.action_registerFragment_to_workersFragment);
                                                     });
                                         } else {
-                                            Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT)
+                                                    .show();
                                             navigateToLoginFragment();
                                         }
                                     })
-                                    .addOnFailureListener(e ->
-                                            Toast.makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e -> Toast
+                                            .makeText(this, "Failed to save user", Toast.LENGTH_SHORT).show());
                         }
                     } else {
                         Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();

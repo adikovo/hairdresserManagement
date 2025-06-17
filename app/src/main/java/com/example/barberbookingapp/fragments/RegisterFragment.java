@@ -62,7 +62,7 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         usernameField = view.findViewById(R.id.usernameRegister);
@@ -85,10 +85,11 @@ public class RegisterFragment extends Fragment {
             String username = usernameField.getText().toString();
             String phone = phoneField.getText().toString();
 
-            //Call the function for registering a new user in Main with the relevant registration details
+            // Call the function for registering a new user in Main with the relevant
+            // registration details
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.registerUser(email, password, confirmPassword, username, phone, userRole);
-            //Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_loginFragment);
+            // Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_loginFragment);
         });
 
         return view;

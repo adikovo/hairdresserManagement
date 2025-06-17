@@ -19,14 +19,6 @@
         android:layout_marginBottom="12dp" />
 
     <Button
-        android:id="@+id/inventory_button"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="Manage Inventory"
-        android:backgroundTint="#42A5F5"
-        android:layout_marginBottom="8dp" />
-
-    <Button
         android:id="@+id/post_announcement_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
