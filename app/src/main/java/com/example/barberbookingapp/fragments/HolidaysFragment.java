@@ -82,7 +82,6 @@ public class HolidaysFragment extends Fragment {
                 isAdmin = "admin".equals(role);
 
                 if (currentUsername != null) {
-                    Log.d("HolidaysFragment", "User loaded - Username: " + currentUsername + ", Is Admin: " + isAdmin);
 
                     // Initialize database references
                     databaseReference = FirebaseDatabase.getInstance().getReference("holidays").child(currentUsername);
@@ -101,7 +100,6 @@ public class HolidaysFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("HolidaysFragment", "Failed to load user data: " + error.getMessage());
                 Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show();
             }
         });
@@ -124,7 +122,6 @@ public class HolidaysFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 (view, year, month, dayOfMonth) -> {
                     String selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
-                    Log.d("HolidaysFragment", "Selected date: " + selectedDate + " (General: " + isGeneral + ")");
 
                     // Validate the selected date
                     Calendar selectedCalendar = Calendar.getInstance();
@@ -144,14 +141,12 @@ public class HolidaysFragment extends Fragment {
                         // Add to general holidays
                         generalHolidaysRef.child(selectedDate).setValue(true)
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("HolidaysFragment", "General holiday added successfully to general_holidays");
                                     Toast.makeText(getContext(), "General holiday added successfully",
                                             Toast.LENGTH_SHORT).show();
                                     // Add to all hairdressers
                                     addHolidayToAllHairdressers(selectedDate);
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e("HolidaysFragment", "Failed to add general holiday: " + e.getMessage());
                                     Toast.makeText(getContext(), "Failed to add general holiday", Toast.LENGTH_SHORT)
                                             .show();
                                 });
@@ -159,8 +154,6 @@ public class HolidaysFragment extends Fragment {
                         // Add to personal holidays
                         databaseReference.child(selectedDate).setValue(true)
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("HolidaysFragment",
-                                            "Personal holiday added successfully to holidays/" + currentUsername);
                                     Toast.makeText(getContext(), "Personal holiday added successfully",
                                             Toast.LENGTH_SHORT).show();
                                     // Add to the list immediately
@@ -168,7 +161,6 @@ public class HolidaysFragment extends Fragment {
                                     adapter.notifyDataSetChanged();
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e("HolidaysFragment", "Failed to add personal holiday: " + e.getMessage());
                                     Toast.makeText(getContext(), "Failed to add personal holiday", Toast.LENGTH_SHORT)
                                             .show();
                                 });
@@ -207,13 +199,12 @@ public class HolidaysFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("HolidaysFragment", "Failed to add holiday to all hairdressers", error.toException());
+                Toast.makeText(getContext(), "Failed to add holiday to all hairdressers", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void loadHolidays() {
-        Log.d("HolidaysFragment", "Loading holidays for user: " + currentUsername);
 
         // Clear the list first
         holidaysList.clear();
@@ -249,11 +240,10 @@ public class HolidaysFragment extends Fragment {
 
                             // Only add if the holiday is today or in the future
                             if (!holidayDate.before(today)) {
-                                Log.d("HolidaysFragment", "Adding personal holiday: " + holiday);
                                 holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, false));
                             }
                         } catch (Exception e) {
-                            Log.e("HolidaysFragment", "Error parsing date: " + holiday, e);
+                            Toast.makeText(getContext(), "Error processing holiday date", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -282,11 +272,11 @@ public class HolidaysFragment extends Fragment {
 
                                         // Only add if the holiday is today or in the future
                                         if (!holidayDate.before(today)) {
-                                            Log.d("HolidaysFragment", "Adding general holiday: " + holiday);
                                             holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, true));
                                         }
                                     } catch (Exception e) {
-                                        Log.e("HolidaysFragment", "Error parsing date: " + holiday, e);
+                                        Toast.makeText(getContext(), "Error processing holiday date",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -295,7 +285,7 @@ public class HolidaysFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Log.e("HolidaysFragment", "Failed to load general holidays", error.toException());
+                            Toast.makeText(getContext(), "Failed to load general holidays", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -305,7 +295,6 @@ public class HolidaysFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("HolidaysFragment", "Failed to load holidays", error.toException());
                 Toast.makeText(getContext(), "Failed to load holidays", Toast.LENGTH_SHORT).show();
             }
         });

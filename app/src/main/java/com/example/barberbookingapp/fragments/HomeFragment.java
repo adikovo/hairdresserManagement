@@ -173,7 +173,6 @@ public class HomeFragment extends Fragment {
                     availableHairdressers.clear();
 
                     if (!snapshot.exists()) {
-                        Log.e("HomeFragment", "No hairdressers found in database");
                         return;
                     }
 
@@ -219,14 +218,12 @@ public class HomeFragment extends Fragment {
                         }
                     });
                 } catch (Exception e) {
-                    Log.e("HomeFragment", "Error loading hairdressers", e);
                     Toast.makeText(requireContext(), "Error loading hairdressers", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("HomeFragment", "Failed to load hairdressers", error.toException());
                 Toast.makeText(requireContext(), "Failed to load hairdressers", Toast.LENGTH_SHORT).show();
             }
         });
@@ -307,7 +304,7 @@ public class HomeFragment extends Fragment {
                             return;
                         }
                     } catch (Exception e) {
-                        Log.e("HomeFragment", "Error checking appointment time", e);
+                        Toast.makeText(getContext(), "Error checking appointment time", Toast.LENGTH_SHORT).show();
                     }
 
                     if (selectedHairdresserAppointments != null
@@ -364,7 +361,6 @@ public class HomeFragment extends Fragment {
                         resetInputFields();
                     }
                 } catch (Exception e) {
-                    Log.e("HomeFragment", "Error parsing date/time", e);
                     Toast.makeText(getContext(), "Invalid date or time format", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -395,7 +391,7 @@ public class HomeFragment extends Fragment {
         }
 
         if (selectedWorker == null) {
-            Log.e("HomeFragment", "Selected hairdresser not found in available list");
+            Toast.makeText(getContext(), "Selected hairdresser not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -412,8 +408,6 @@ public class HomeFragment extends Fragment {
                         selectedHairdresserHolidays.add(holiday);
                     }
                 }
-                Log.d("HomeFragment",
-                        "Loaded holidays for " + hairdresserUsername + ": " + selectedHairdresserHolidays);
 
                 // After loading personal holidays, load general holidays
                 DatabaseReference generalHolidaysRef = FirebaseDatabase.getInstance().getReference("general_holidays");
@@ -426,20 +420,18 @@ public class HomeFragment extends Fragment {
                                 selectedHairdresserHolidays.add(holiday);
                             }
                         }
-                        Log.d("HomeFragment",
-                                "Loaded general holidays. Total holidays: " + selectedHairdresserHolidays);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("HomeFragment", "Failed to load general holidays", error.toException());
+                        Toast.makeText(getContext(), "Failed to load general holidays", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("HomeFragment", "Failed to load holidays", error.toException());
+                Toast.makeText(getContext(), "Failed to load holidays", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -456,13 +448,11 @@ public class HomeFragment extends Fragment {
                                 selectedHairdresserAppointments.add(appointment.getDateTime());
                             }
                         }
-                        Log.d("HomeFragment", "Loaded appointments for " + hairdresserUsername + ": "
-                                + selectedHairdresserAppointments);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("HomeFragment", "Failed to load appointments", error.toException());
+                        Toast.makeText(getContext(), "Failed to load appointments", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

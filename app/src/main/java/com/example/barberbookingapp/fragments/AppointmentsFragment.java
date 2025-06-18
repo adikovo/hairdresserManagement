@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.text.ParseException;
 
 // Fragment for displaying all appointments for the current user
 // Allows users to view and cancel their appointments
@@ -121,9 +122,9 @@ public class AppointmentsFragment extends Fragment {
                                     if (!appointmentDate.before(today)) {
                                         appointments.add(appointment);
                                     }
-                                } catch (Exception e) {
-                                    Log.e("AppointmentsFragment", "Error parsing date: " + appointment.getDateTime(),
-                                            e);
+                                } catch (ParseException e) {
+                                    Toast.makeText(getContext(), "Error processing appointment date",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

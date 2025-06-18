@@ -73,7 +73,6 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
             DatabaseReference appointmentRef = FirebaseDatabase.getInstance()
                     .getReference("appointments")
                     .child(appointment.getDateTime().replace(" ", "_").replace(":", "-"));
-            Log.d("FirebasePath", "Path to delete: " + appointmentRef.toString());
 
             appointmentRef.removeValue().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
