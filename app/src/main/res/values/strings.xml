@@ -8,26 +8,26 @@
 
     <string name="date_time_label">Date and Time</string>
 
-    <string-array name="barber_services">
-        <item>No service selected</item>
-        <item>Men’s haircut - $20</item>
-        <item>Women’s haircut - $40</item>
-        <item>Children’s haircut - $15</item>
-        <item>Regular shave - $10</item>
-        <item>Luxury shave (hot towel) - $25</item>
-        <item>Basic color - $50</item>
-        <item>Color with highlights - $70</item>
-        <item>Basic blow-dry - $20</item>
-        <item>Deluxe blow-dry (special style) - $35</item>
-        <item>Beard grooming - $15</item>
-        <item>Keratin treatment - $100</item>
-        <item>Japanese straightening - $150</item>
-        <item>Deep hair repair treatment - $60</item>
-        <item>Hair mask (moisturizing treatment) - $25</item>
-        <item>Braiding or traditional hair styling - $30</item>
-    </string-array>
+    <string name="salon_info">Hair Salon – Crafting Style and Confidence Since 2023. Visit us at 19 Even Gvirol St, Herzliya.</string>
 
-    <string name="barbershop_info">Hair Salon – Crafting Style &amp; Confidence Since 2023. Visit us at 19 Even Gvirol St, Herzliya.</string>
+    <string-array name="hairdresser_services">
+        <item>No service selected</item>
+        <item>Classic Mens Cut - $20</item>
+        <item>Premium Womens Cut - $40</item>
+        <item>Kids Cut (12 and under) - $15</item>
+        <item>Classic Shave - $10</item>
+        <item>Full Color - $25</item>
+        <item>Root Touch-up Color - $50</item>
+        <item>Full Highlight Service - $70</item>
+        <item>Quick Blow Dry - $20</item>
+        <item>Styling Blow Dry - $35</item>
+        <item>Beard Trim and Shape - $15</item>
+        <item>Keratin Straightening - $120</item>
+        <item>Japanese Straightening - $150</item>
+        <item>Deep Conditioning Treatment - $60</item>
+        <item>Hydrating Hair Mask - $25</item>
+        <item>Event Styling - $30</item>
+    </string-array>
 
     <string-array name="appointment_statuses">
         <item>Pending</item>

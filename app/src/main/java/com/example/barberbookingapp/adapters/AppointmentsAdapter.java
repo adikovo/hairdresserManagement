@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentsViewHolder> {
 
-    private final Context context;
+    private Context context;
     private final List<Appointments> appointmentsList;
     private final OnAppointmentCancelListener cancelListener;
 
