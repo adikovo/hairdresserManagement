@@ -32,7 +32,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.SimpleDateFormat;
+import java.util.TimeZone;
 
 // HomeFragment: Allows clients to book appointments at the hair salon.
 // - Displays a welcome message with the client's name.
@@ -278,6 +282,9 @@ public class HomeFragment extends Fragment {
                         && !selectedHairdresser.equals("No hairdresser selected")) {
                     String dateTime = selectedDate + " " + selectedTime;
 
+                    // Convert local time to UTC before storing
+                    String utcDateTime = convertLocalToUTCTime(dateTime);
+
                     // Check if the selected time is in the past
                     try {
                         // Get current date and time
@@ -308,7 +315,8 @@ public class HomeFragment extends Fragment {
                         Log.e("HomeFragment", "Error checking appointment time", e);
                     }
 
-                    if (selectedHairdresserAppointments != null && selectedHairdresserAppointments.contains(dateTime)) {
+                    if (selectedHairdresserAppointments != null
+                            && selectedHairdresserAppointments.contains(utcDateTime)) {
                         Toast.makeText(requireContext(), "Selected hairdresser is not available at this time",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -471,5 +479,37 @@ public class HomeFragment extends Fragment {
         selectedDateTimeText.setText("No date selected");
         Spinner timeSpinner = requireView().findViewById(R.id.time_spinner);
         timeSpinner.setSelection(0);
+    }
+
+    private String convertUTCToLocalTime(String utcDateTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(utcDateTime);
+
+            if (date != null) {
+                sdf.setTimeZone(TimeZone.getDefault());
+                return sdf.format(date);
+            }
+        } catch (ParseException e) {
+            Log.e("HomeFragment", "Error converting UTC time to local", e);
+        }
+        return utcDateTime; // Return original if conversion fails
+    }
+
+    private String convertLocalToUTCTime(String localDateTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getDefault());
+            Date date = sdf.parse(localDateTime);
+
+            if (date != null) {
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                return sdf.format(date);
+            }
+        } catch (ParseException e) {
+            Log.e("HomeFragment", "Error converting local time to UTC", e);
+        }
+        return localDateTime; // Return original if conversion fails
     }
 }

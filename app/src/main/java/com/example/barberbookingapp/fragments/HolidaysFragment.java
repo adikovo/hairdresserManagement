@@ -30,6 +30,14 @@ There is also a button to add a new holiday to the list
 * */
 
 public class HolidaysFragment extends Fragment {
+
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
     private RecyclerView recyclerView;
     private TextView emptyText;
     private List<HolidaysAdapter.HolidayItem> holidaysList;
@@ -41,10 +49,19 @@ public class HolidaysFragment extends Fragment {
     private Button addGeneralHolidayButton;
     private String role;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_holidays, container, false);
 
         recyclerView = view.findViewById(R.id.holidays_recycler_view);
@@ -149,7 +166,6 @@ public class HolidaysFragment extends Fragment {
                                     // Add to the list immediately
                                     holidaysList.add(new HolidaysAdapter.HolidayItem(selectedDate, false));
                                     adapter.notifyDataSetChanged();
-                                    updateUI();
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("HolidaysFragment", "Failed to add personal holiday: " + e.getMessage());
@@ -186,7 +202,6 @@ public class HolidaysFragment extends Fragment {
                 if (isAdmin) {
                     holidaysList.add(new HolidaysAdapter.HolidayItem(date, true));
                     adapter.notifyDataSetChanged();
-                    updateUI();
                 }
             }
 
@@ -275,8 +290,7 @@ public class HolidaysFragment extends Fragment {
                                     }
                                 }
                             }
-                            adapter.notifyDataSetChanged();
-                            updateUI();
+                            updateRecyclerView();
                         }
 
                         @Override
@@ -285,8 +299,7 @@ public class HolidaysFragment extends Fragment {
                         }
                     });
                 } else {
-                    adapter.notifyDataSetChanged();
-                    updateUI();
+                    updateRecyclerView();
                 }
             }
 
@@ -298,16 +311,23 @@ public class HolidaysFragment extends Fragment {
         });
     }
 
-    // Function that helps display what needs to be shown based on the list state
-    private void updateUI() {
+    private void updateRecyclerView() {
+        if (!isAdded())
+            return; // Check if fragment is still attached
+        RecyclerView recyclerView = requireView().findViewById(R.id.holidays_recycler_view);
+        adapter = createHolidaysAdapter();
+        recyclerView.setAdapter(adapter);
+
         if (holidaysList.isEmpty()) {
             emptyText.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-            Log.d("HolidaysFragment", "No holidays to display");
         } else {
             emptyText.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            Log.d("HolidaysFragment", "Displaying " + holidaysList.size() + " holidays");
         }
+    }
+
+    private HolidaysAdapter createHolidaysAdapter() {
+        return new HolidaysAdapter(holidaysList, databaseReference, isAdmin);
     }
 }

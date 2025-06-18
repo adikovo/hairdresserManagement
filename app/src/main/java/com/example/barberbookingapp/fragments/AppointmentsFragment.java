@@ -110,9 +110,9 @@ public class AppointmentsFragment extends Fragment {
 
                                     Calendar appointmentDate = Calendar.getInstance();
                                     appointmentDate.set(
-                                            Integer.parseInt(dateParts[2]), // year
+                                            Integer.parseInt(dateParts[0]), // year
                                             Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                                            Integer.parseInt(dateParts[0]), // day
+                                            Integer.parseInt(dateParts[2]), // day
                                             Integer.parseInt(timeParts[0]), // hour
                                             Integer.parseInt(timeParts[1]) // minute
                                     );
