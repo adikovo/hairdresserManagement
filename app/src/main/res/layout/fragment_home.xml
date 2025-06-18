@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Main client dashboard with appointment booking form and announcement display -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -8,7 +9,6 @@
     android:padding="16dp"
     android:gravity="center_horizontal">
 
-    <!--עיצוב הפרגמנט הראשי שנפתח ללקוח לאחר התחברות-->
 
     <TextView
         android:id="@+id/welcome_text"

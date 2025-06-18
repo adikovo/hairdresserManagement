@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Background drawable for appointment items in the appointments list.
+    This defines the visual style of each appointment card
+-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
-    <!--הגדרה של איך יראה הוספת פריט למלאי בפרגנט של המלאי-->
 
     <corners android:radius="12dp"/>
 

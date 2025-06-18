@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Client's appointment item with date, service, hairdresser, and cancel button -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -7,8 +8,6 @@
     android:background="@drawable/appointment_item_bg"
     android:padding="16dp"
     android:layout_margin="8dp">
-
-    <!--עיצוב של פריט ברשימת התורים אצל הלקוח-->
 
     <TextView
         android:id="@+id/appointment_date_time"

@@ -89,14 +89,12 @@ public class MainActivity extends AppCompatActivity {
         appointmentsRef.child(appointmentKey).setValue(appointment)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Appointment scheduled and added to calendar.", Toast.LENGTH_SHORT).show();
-                        Log.d("datetime", "date time is: " + dateTime.toString());
                         // Convert date and time to milliseconds to add to calendar
                         long startTime = convertDateTimeToMillis(dateTime);
                         long endTime = startTime + 3600000; // Duration of one hour
 
                         // Add the event to the calendar
-                        addAppointmentToCalendar(serviceType, "barbershop", startTime, endTime);
+                        addAppointmentToCalendar(serviceType, getString(R.string.salon_info), startTime, endTime);
                     } else {
                         Toast.makeText(this, "Failed to book appointment", Toast.LENGTH_SHORT).show();
                     }
@@ -125,11 +123,10 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
         if (uri != null) {
-            Toast.makeText(this, "Appointment added to the calendar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Appointment scheduled successfully", Toast.LENGTH_SHORT).show();
         } else {
-            Log.e("CalendarDebug", "Failed to add event to calendar");
+            Toast.makeText(this, "Failed to add appointment to calendar", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -155,15 +152,12 @@ public class MainActivity extends AppCompatActivity {
                 calendar.setTime(date);
                 calendar.setTimeZone(TimeZone.getDefault());
 
-                Log.d("DateTimeConversion", "Parsed Date: " + calendar.getTime().toString());
                 return calendar.getTimeInMillis();
             } else {
-                Log.e("DateTimeConversion", "Failed to parse date");
                 return System.currentTimeMillis();
             }
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.e("DateTimeConversion", "ParseException: " + e.getMessage());
             return System.currentTimeMillis();
         }
     }
@@ -195,7 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
     // User login function
     // Receives email and password and checks in Firebase if the user exists
-    // If exists, checks the ROLE to determine if they are a barber or client and
+    // If exists, checks the ROLE to determine if they are a hairdresser or client
+    // and
     // directs them to the appropriate fragment
     public void loginUser(String email, String password) {
         if (email.isEmpty() || password.isEmpty()) {

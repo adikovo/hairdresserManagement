@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Client's appointment list view with empty state message -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,8 +9,6 @@
     android:background="#424242"
     android:padding="16dp"
     tools:context=".fragments.AppointmentsFragment">
-
-<!--עיצוב הפרגמנט של הפגישות של הלקוח-->
 
     <TextView
         android:layout_width="match_parent"

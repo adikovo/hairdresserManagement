@@ -1,14 +1,12 @@
 <resources>
-    <string name="app_name">BarberBookingApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-
-
+    <string name="app_name">HairSalonBookingApp</string>
+    
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
     <string name="date_time_label">Date and Time</string>
 
-    <string name="salon_info">Hair Salon – Crafting Style and Confidence Since 2023. Visit us at 19 Even Gvirol St, Herzliya.</string>
+    <string name="salon_info">Hair Salon – Crafting Style and Confidence Since 2020. Visit at 48 Hanesiim St, Raanana.</string>
 
     <string-array name="hairdresser_services">
         <item>No service selected</item>
@@ -27,13 +25,6 @@
         <item>Deep Conditioning Treatment - $60</item>
         <item>Hydrating Hair Mask - $25</item>
         <item>Event Styling - $30</item>
-    </string-array>
-
-    <string-array name="appointment_statuses">
-        <item>Pending</item>
-        <item>Confirmed</item>
-        <item>Cancelled</item>
-        <item>Completed</item>
     </string-array>
 
 

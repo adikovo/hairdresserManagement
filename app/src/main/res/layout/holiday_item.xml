@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Individual holiday item layout with date, type, and remove button -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,8 +8,6 @@
     android:padding="12dp"
     android:layout_margin="8dp"
     android:gravity="center_vertical">
-
-    <!--עיצוב פריט של אייטם ברשימת ימי החופש-->
 
     <LinearLayout
         android:layout_width="0dp"

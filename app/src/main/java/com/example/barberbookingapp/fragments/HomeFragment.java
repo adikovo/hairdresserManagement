@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Set up service spinner with barber services
+        // Set up service spinner with the salon services
         ArrayAdapter<CharSequence> serviceAdapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.hairdresser_services,

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Background drawable for the announcement edit text dialog.
+    This defines the visual style of the text input area where the hairdresser/admin
+    can edit announcements
+-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <!--הגדרה של איך יראה הדיאלוג בו הספר יכול לערוך את הלוח מודעות (בפרגמנט של הספר)-->
 
     <solid android:color="#424242" />
 

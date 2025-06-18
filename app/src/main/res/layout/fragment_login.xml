@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Login screen with email/password fields and registration option -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -6,10 +7,6 @@
     android:orientation="vertical"
     android:background="#424242"
     android:padding="16dp">
-
-    <!--עיצוב הפרגמנט של ההתחברות - הפרגמנט שנפתח בכניסה באפליקציה-->
-
-
 
     <EditText
         android:id="@+id/emailLogin"

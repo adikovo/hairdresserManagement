@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- User registration form with username, email, phone, and password fields -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -7,8 +8,6 @@
     android:background="#424242"
     android:padding="16dp">
 
-
-    <!--עיצוב פרגמנט ההרשמה למערכת-->
 
     <TextView
         android:layout_width="match_parent"

@@ -73,7 +73,7 @@ public class AdminFragment extends Fragment {
             navController.navigate(R.id.action_adminFragment_to_workersFragment);
         });
 
-        // When clicking the salon holidays button, the barber will navigate to the
+        // When clicking the salon holidays button, the hairdresser will navigate to the
         // relevant fragment
         Button HolidaysFragmentButton = view.findViewById(R.id.manage_holidays_button);
         HolidaysFragmentButton.setOnClickListener(v -> {

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Background drawable for text input fields throughout the app.
+-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
-    <!--עיצוב התיבות טקסט-->
 
     <solid android:color="#424242" />
 
