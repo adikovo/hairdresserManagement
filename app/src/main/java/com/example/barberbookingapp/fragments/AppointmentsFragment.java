@@ -122,7 +122,7 @@ public class AppointmentsFragment extends Fragment {
                                     if (!appointmentDate.before(today)) {
                                         appointments.add(appointment);
                                     }
-                                } catch (ParseException e) {
+                                } catch (Exception e) {
                                     Toast.makeText(getContext(), "Error processing appointment date",
                                             Toast.LENGTH_SHORT).show();
                                 }
