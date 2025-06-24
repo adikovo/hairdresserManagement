@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Dark background for holiday list items with padding -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#3A3A3A" /> 
+    <solid android:color="#66e9bf" />
     <corners android:radius="8dp" />
     <padding
         android:left="8dp"

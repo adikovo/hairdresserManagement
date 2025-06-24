@@ -68,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:backgroundTint="#D4E0DE"
             android:text="Cancel Appointment"
-            android:backgroundTint="#FF5252"
             android:textColor="@color/white" />
 
     </LinearLayout>

@@ -29,20 +29,20 @@
             android:id="@+id/holiday_type_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:text="Personal Holiday"
-            android:textSize="12sp"
-            android:textColor="#BBDEFB"
-            android:gravity="start"/>
+            android:textColor="#000000"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <Button
         android:id="@+id/delete_holiday_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#D4E0DE"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:paddingVertical="8dp"
         android:paddingHorizontal="12dp"
-        android:text="Remove"
-        android:backgroundTint="#FF7043" />
+        android:paddingVertical="8dp"
+        android:text="Remove" />
 </LinearLayout>

@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Holiday management screen with personal and general holiday options -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FDFDFD"
     android:orientation="vertical"
-    android:background="#424242"
     android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        app:srcCompat="@drawable/logo_hair_salon" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Holidays"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="12dp"
         android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp"/>
-
-    <ImageView
-        android:layout_width="105dp"
-        android:layout_height="123dp"
-        android:src="@drawable/barberchair"
-        android:layout_gravity="center"/>
+        android:text="Manage Holidays"
+        android:textColor="#040000"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/add_holiday_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#5BF8C5"
         android:text="Add Personal Holiday"
-        android:backgroundTint="#FF7043"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="8dp"/>
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/add_general_holiday_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="Add General Holiday"
-        android:backgroundTint="#42A5F5"
-        android:textColor="#FFFFFF"
         android:layout_marginBottom="12dp"
-        android:visibility="gone"/>
+        android:backgroundTint="#5BF8C5"
+        android:text="Add General Holiday"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/empty_holidays_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
         android:text="No holidays added"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:visibility="gone"
-        android:layout_marginBottom="8dp"/>
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/holidays_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:padding="8dp" />
 </LinearLayout>
