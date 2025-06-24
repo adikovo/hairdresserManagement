@@ -14,5 +14,5 @@
         android:background="@drawable/announcement_edit_text_background"
         android:hint="Type your announcement here"
         android:padding="12dp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#000000" />
 </LinearLayout>
