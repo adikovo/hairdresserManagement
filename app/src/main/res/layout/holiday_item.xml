@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/holiday_item_bg"
+    android:background="@color/color_lighter"
     android:padding="12dp"
     android:layout_margin="8dp"
     android:gravity="center_vertical">

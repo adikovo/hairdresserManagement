@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="#5BF8C5"
+        android:backgroundTint="@color/color_lighter"
         android:text="Add Personal Holiday"
         android:textColor="#FFFFFF" />
 
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="#5BF8C5"
+        android:backgroundTint="@color/color_lighter"
         android:text="Add General Holiday"
         android:textColor="#FFFFFF"
         android:visibility="gone" />

@@ -9,6 +9,9 @@
     <color name="edit_text_background">#FFFFFF</color>
     <color name="edit_text_stroke">#2196F3</color>
     <color name="colorSecondary">#03DAC5</color>
-    <color name="personal_holiday_color">#8be9d3</color>
-    <color name="general_holiday_color">#C1FFF8</color>
+    <color name="personal_holiday_color">#542CF1</color>
+    <color name="general_holiday_color">#9880F7</color>
+    <color name="button_teal">#5AEBC5</color>
+    <color name="color_lighter">#9880F7</color>
+    <color name="color_darker">#542CF1</color>
 </resources>

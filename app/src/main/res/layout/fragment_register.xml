@@ -95,6 +95,6 @@
         android:id="@+id/register_buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:backgroundTint="#5BF8C5"
+        android:backgroundTint="@color/color_lighter"
         android:text="Register" />
 </LinearLayout>
