@@ -20,135 +20,132 @@
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="Welcome back - "
         android:textColor="#010505"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-
-    <TextView
-        android:id="@+id/announcement_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/announcement_background"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="No announcement available"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:layout_marginBottom="8dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        android:fillViewport="true"
+        android:background="@drawable/announcement_background">
+        <TextView
+            android:id="@+id/announcement_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="No announcement available"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </ScrollView>
 
     <TextView
         android:id="@+id/schedule_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="Schedule Your Appointment"
         android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
 
-    <!-- Service Selection -->
     <Button
         android:id="@+id/view_appointments_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:backgroundTint="#5BF8C5"
         android:text="View My Appointments"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="4dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Select Service"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="8dp" />
 
     <Spinner
         android:id="@+id/service_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_bg" />
+        android:background="@drawable/rounded_bg"
+        android:layout_marginTop="4dp" />
 
-    <!-- Hairdresser Selection -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Select Hairdresser"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="8dp" />
 
     <Spinner
         android:id="@+id/hairdresser_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_bg" />
+        android:background="@drawable/rounded_bg"
+        android:layout_marginTop="4dp" />
 
-    <!-- Date Selection -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Select Date"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="8dp" />
 
-    <!-- Time Selection -->
     <Button
         android:id="@+id/select_date_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:backgroundTint="#5BF8C5"
         android:text="Choose Date"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="4dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Select Time"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="15sp"
+        android:layout_marginTop="8dp" />
 
     <Spinner
         android:id="@+id/time_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_bg" />
+        android:background="@drawable/rounded_bg"
+        android:layout_marginTop="4dp" />
 
-    <!-- Selected Date and Time Display -->
     <TextView
         android:id="@+id/selected_datetime_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="No date selected"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp" />
 
-    <!-- Book Appointment Button -->
     <Button
         android:id="@+id/book_appointment_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="24dp"
         android:backgroundTint="#5BF8C5"
         android:text="Book Appointment"
-        android:textColor="#FFFFFF" />
-
-    <!-- View Appointments Button -->
-
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="12dp" />
 
 </LinearLayout>
