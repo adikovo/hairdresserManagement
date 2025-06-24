@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Worker item layout with username, email, phone, and delete button -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/worker_rounded_bg"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_margin="8dp">
+
+    <TextView
+        android:id="@+id/worker_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textColor="#FFFBFB"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/worker_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Email"
+        android:textColor="#FFFCFC"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/worker_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Phone"
+        android:textColor="#FDFBFB"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/delete_worker_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#D4E0DE"
+        android:text="Delete"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout> 

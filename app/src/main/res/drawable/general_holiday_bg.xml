@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Blue background for general holiday items -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#b3f5e8" />
+    <corners android:radius="8dp" />
+</shape> 

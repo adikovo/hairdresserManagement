@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Background drawable for the announcement board in the client's fragment.
+    This defines the visual style of the announcement display area
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+
+    
+
+
+    <solid
+        android:color="#aeffe9" />
+
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF"/>
+
+    <corners
+        android:radius="12dp"/>
+
+    <padding
+        android:left="12dp"
+        android:top="12dp"
+        android:right="12dp"
+        android:bottom="12dp"/>
+</shape>

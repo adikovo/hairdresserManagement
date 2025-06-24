@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Client's appointment item with date, service, hairdresser, and cancel button -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/appointment_item_bg"
+    android:padding="16dp"
+    android:layout_margin="8dp">
+
+    <TextView
+        android:id="@+id/appointment_date_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date and Time"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/appointment_service_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Service Type"
+        android:textColor="#FDFDFD"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/appointment_hairdresser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Hairdresser"
+        android:textColor="#FDFCFC"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/cancel_appointment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#D4E0DE"
+        android:padding="8dp"
+        android:text="Cancel" />
+</LinearLayout>
