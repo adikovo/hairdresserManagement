@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import static android.view.View.INVISIBLE;
 
@@ -16,8 +16,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.barberbookingapp.MainActivity;
-import com.example.barberbookingapp.R;
+import com.example.hairsalonbookingapp.MainActivity;
+import com.example.hairsalonbookingapp.R;
 
 /*
 Registration fragment for the system

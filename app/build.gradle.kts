@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.barberbookingapp"
+    namespace = "com.example.hairsalonbookingapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.barberbookingapp"
+        applicationId = "com.example.hairsalonbookingapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.example.barberbookingapp;
+package com.example.hairsalonbookingapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -25,8 +25,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.example.barberbookingapp.models.Appointments;
-import com.example.barberbookingapp.models.User;
+import com.example.hairsalonbookingapp.models.Appointments;
+import com.example.hairsalonbookingapp.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;

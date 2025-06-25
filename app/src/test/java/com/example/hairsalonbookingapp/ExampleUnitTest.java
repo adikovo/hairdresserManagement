@@ -1,4 +1,4 @@
-package com.example.barberbookingapp;
+package com.example.hairsalonbookingapp;
 
 import org.junit.Test;
 

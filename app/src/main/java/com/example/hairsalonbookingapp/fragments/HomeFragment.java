@@ -1,14 +1,12 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.barberbookingapp.MainActivity;
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.models.Appointments;
-import com.example.barberbookingapp.models.Worker;
+import com.example.hairsalonbookingapp.MainActivity;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.models.Appointments;
+import com.example.hairsalonbookingapp.models.Worker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,9 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 // HomeFragment: Allows clients to book appointments at the hair salon.
 // - Displays a welcome message with the client's name.

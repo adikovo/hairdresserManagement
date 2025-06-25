@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- נותן לי גישה להוספת אירוע לקלנדר -->
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
 
@@ -14,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BarberBookingApp"
+        android:theme="@style/Theme.HairSalonBookingApp"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

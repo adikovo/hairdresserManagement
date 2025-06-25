@@ -1,7 +1,6 @@
-package com.example.barberbookingapp.adapters;
+package com.example.hairsalonbookingapp.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.models.Appointments;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.models.Appointments;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

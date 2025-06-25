@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import android.os.Bundle;
 
@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.barberbookingapp.MainActivity;
-import com.example.barberbookingapp.R;
+import com.example.hairsalonbookingapp.MainActivity;
+import com.example.hairsalonbookingapp.R;
 
 /*
 Login fragment for the system
@@ -60,20 +60,19 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        //When clicking the register button, the user navigates to a fragment where they can register
+        // When clicking the register button, the user navigates to a fragment where
+        // they can register
         Button registerButton = view.findViewById(R.id.register_buttonLogin);
         registerButton.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment);
         });
 
-
         emailField = view.findViewById(R.id.emailLogin);
         passwordField = view.findViewById(R.id.passwordLogin);
-
 
         Button loginButton = view.findViewById(R.id.login_buttonLogin);
         loginButton.setOnClickListener(v -> {
@@ -94,7 +93,6 @@ public class LoginFragment extends Fragment {
                 Toast.makeText(getContext(), "Error: Please try again", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return view;
     }

@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -19,10 +19,9 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.adapters.AdminAppointmentsAdapter;
-import com.example.barberbookingapp.models.Appointments;
-import com.example.barberbookingapp.models.User;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.adapters.AdminAppointmentsAdapter;
+import com.example.hairsalonbookingapp.models.Appointments;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 // Admin fragment for managing the hair salon system
@@ -211,8 +211,10 @@ public class AdminFragment extends Fragment {
                                     appointment.setHairdresserUsername(appointmentHairdresser);
                                 }
 
-                                appointmentsList.add(appointment);
-                                adminAppointmentsAdapter.notifyDataSetChanged();
+                                if (isAppoitmentDateValid(appointment.getDateTime())) {
+                                    appointmentsList.add(appointment);
+                                    adminAppointmentsAdapter.notifyDataSetChanged();
+                                }
                             }
 
                             @Override
@@ -230,6 +232,27 @@ public class AdminFragment extends Fragment {
                 Toast.makeText(requireContext(), "Failed to load appointments.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean isAppoitmentDateValid(String dateToCheck) {
+        // Parse date and time from the appointment
+        String[] dateTimeParts = dateToCheck.split(" ");
+        String[] dateParts = dateTimeParts[0].split("-");
+        String[] timeParts = dateTimeParts[1].split(":");
+
+        Calendar appointmentDateTime = Calendar.getInstance();
+        appointmentDateTime.set(
+                Integer.parseInt(dateParts[0]), // year
+                Integer.parseInt(dateParts[1]) - 1, // month (0-based)
+                Integer.parseInt(dateParts[2]), // day
+                Integer.parseInt(timeParts[0]), // hour
+                Integer.parseInt(timeParts[1]) // minute
+        );
+
+        // Get current date and time
+        Calendar currentDateTime = Calendar.getInstance();
+
+        return appointmentDateTime.after(currentDateTime);
     }
 
     // Load appointments for the currently logged-in hairdresser
@@ -252,7 +275,9 @@ public class AdminFragment extends Fragment {
                                     appointmentsList.clear();
                                     for (DataSnapshot child : snapshot.getChildren()) {
                                         Appointments appointment = child.getValue(Appointments.class);
-                                        if (appointment != null) {
+
+                                        // Only add appointments that are before current time
+                                        if (appointment != null && isAppoitmentDateValid(appointment.getDateTime())) {
                                             appointmentsList.add(appointment);
                                         }
                                     }

@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.models;
+package com.example.hairsalonbookingapp.models;
 
 // Model class for an appointment
 // Contains fields for service type, user ID, date/time, and hair dresser username

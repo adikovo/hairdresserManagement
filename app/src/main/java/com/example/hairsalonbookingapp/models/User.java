@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.models;
+package com.example.hairsalonbookingapp.models;
 
 // Model class for a user (client or hair dresser)
 // Contains fields for username, email, role, and phone number
@@ -10,12 +10,14 @@ public class User {
     public String phone;
 
     /*
-    מחלקה זו נועדה לייצוג של כל משתמש בפיירבייס
-    כל משתמש מיוצג על ידי שם משתמש, אימייל, תפקיד (ספר או לקוח) ומספר טלפון
-    המפתח של המשתמש ניתן על ידי הפיירבייס
-    */
+     * מחלקה זו נועדה לייצוג של כל משתמש בפיירבייס
+     * כל משתמש מיוצג על ידי שם משתמש, אימייל, תפקיד (ספר או לקוח) ומספר טלפון
+     * המפתח של המשתמש ניתן על ידי הפיירבייס
+     */
 
-    public User() {}
+    public User() {
+    }
+
     public User(String username, String email, String role, String phone) {
         this.username = username;
         this.email = email;

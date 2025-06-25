@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.models;
+package com.example.hairsalonbookingapp.models;
 
 import java.util.List;
 import java.util.ArrayList;

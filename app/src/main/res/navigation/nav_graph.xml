@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/adminFragment"
-        android:name="com.example.barberbookingapp.fragments.AdminFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.AdminFragment"
         android:label="fragment_admin"
         tools:layout="@layout/fragment_admin" >
         <action
@@ -19,12 +19,12 @@
     </fragment>
     <fragment
         android:id="@+id/appointmentsFragment"
-        android:name="com.example.barberbookingapp.fragments.AppointmentsFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.AppointmentsFragment"
         android:label="fragment_appointments"
         tools:layout="@layout/fragment_appointments" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.barberbookingapp.fragments.HomeFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.barberbookingapp.fragments.LoginFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.barberbookingapp.fragments.RegisterFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -60,11 +60,11 @@
     </fragment>
     <fragment
         android:id="@+id/holidaysFragment"
-        android:name="com.example.barberbookingapp.fragments.HolidaysFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.HolidaysFragment"
         android:label="HolidaysFragment" />
     <fragment
         android:id="@+id/workersFragment"
-        android:name="com.example.barberbookingapp.fragments.WorkersFragment"
+        android:name="com.example.hairsalonbookingapp.fragments.WorkersFragment"
         android:label="WorkersFragment" >
         <action
             android:id="@+id/action_workersFragment_to_registerFragment"

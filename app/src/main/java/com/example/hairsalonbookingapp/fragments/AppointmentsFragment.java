@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import android.os.Bundle;
 
@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.adapters.AppointmentsAdapter;
-import com.example.barberbookingapp.models.Appointments;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.adapters.AppointmentsAdapter;
+import com.example.hairsalonbookingapp.models.Appointments;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

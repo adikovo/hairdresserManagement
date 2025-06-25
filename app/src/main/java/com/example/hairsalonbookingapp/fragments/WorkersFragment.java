@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.navigation.Navigation;
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.adapters.WorkerAdapter;
-import com.example.barberbookingapp.models.Worker;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.adapters.WorkerAdapter;
+import com.example.hairsalonbookingapp.models.Worker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

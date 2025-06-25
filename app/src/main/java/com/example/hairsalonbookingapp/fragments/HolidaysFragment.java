@@ -1,4 +1,4 @@
-package com.example.barberbookingapp.fragments;
+package com.example.hairsalonbookingapp.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.barberbookingapp.R;
-import com.example.barberbookingapp.adapters.HolidaysAdapter;
+import com.example.hairsalonbookingapp.R;
+import com.example.hairsalonbookingapp.adapters.HolidaysAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import java.util.ArrayList;
@@ -239,7 +239,7 @@ public class HolidaysFragment extends Fragment {
                             holidayDate.set(Calendar.MILLISECOND, 0);
 
                             // Only add if the holiday is today or in the future
-                            if (!holidayDate.before(today)) {
+                            if (!holidayDate.after(today)) {
                                 holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, false));
                             }
                         } catch (Exception e) {
