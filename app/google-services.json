@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "617853886677",
+    "firebase_url": "https://hairdressermanagement-b6db2-default-rtdb.firebaseio.com",
+    "project_id": "hairdressermanagement-b6db2",
+    "storage_bucket": "hairdressermanagement-b6db2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617853886677:android:c820a66fab65676b0fc25c",
+        "android_client_info": {
+          "package_name": "com.example.hairsalonbookingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjs6ozG4IFvvUV3puF6AysndfxyFZnTOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
