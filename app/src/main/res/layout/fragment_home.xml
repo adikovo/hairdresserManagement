@@ -23,7 +23,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="Welcome back - "
-        android:textColor="#010505"
+        android:textColor="@color/color_darker"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Schedule Your Appointment"
-        android:textColor="#000000"
+        android:textColor="@color/color_darker"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="4dp" />
@@ -64,14 +64,14 @@
         android:layout_height="48dp"
         android:backgroundTint="@color/color_lighter"
         android:text="View My Appointments"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:layout_marginTop="4dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Service"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/color_darker"
         android:textSize="15sp"
         android:layout_marginTop="8dp" />
 
@@ -86,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Hairdresser"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/color_darker"
         android:textSize="15sp"
         android:layout_marginTop="8dp" />
 
@@ -101,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Date"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/color_darker"
         android:textSize="15sp"
         android:layout_marginTop="8dp" />
 
@@ -111,14 +111,24 @@
         android:layout_height="48dp"
         android:backgroundTint="@color/color_lighter"
         android:text="Choose Date"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/selected_datetime_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="No date selected"
+        android:textColor="@color/color_darker"
+        android:textSize="14sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Time"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/color_darker"
         android:textSize="15sp"
         android:layout_marginTop="8dp" />
 
@@ -129,23 +139,13 @@
         android:background="@drawable/rounded_bg"
         android:layout_marginTop="4dp" />
 
-    <TextView
-        android:id="@+id/selected_datetime_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="No date selected"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:layout_marginTop="8dp" />
-
     <Button
         android:id="@+id/book_appointment_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:backgroundTint="@color/color_lighter"
         android:text="Book Appointment"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:layout_marginTop="12dp" />
 
 </LinearLayout>

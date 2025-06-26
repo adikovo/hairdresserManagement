@@ -213,9 +213,11 @@ public class MainActivity extends AppCompatActivity {
     // If exists, checks the ROLE to determine if they are a hairdresser or client
     // and
     // directs them to the appropriate fragment
-    public void loginUser(String email, String password) {
+    public void loginUser(String email, String password, Runnable onComplete) {
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            if (onComplete != null)
+                onComplete.run();
             return;
         }
 
@@ -253,14 +255,20 @@ public class MainActivity extends AppCompatActivity {
                                                 "Failed to fetch role: " + roleTask.getException().getMessage(),
                                                 Toast.LENGTH_SHORT).show();
                                     }
+                                    if (onComplete != null)
+                                        onComplete.run();
                                 });
                             }
                         } else {
                             Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
+                            if (onComplete != null)
+                                onComplete.run();
                         }
                     });
         } catch (Exception e) {
             Toast.makeText(this, "Error during login: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (onComplete != null)
+                onComplete.run();
         }
     }
 

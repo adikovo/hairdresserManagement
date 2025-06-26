@@ -239,7 +239,7 @@ public class HolidaysFragment extends Fragment {
                             holidayDate.set(Calendar.MILLISECOND, 0);
 
                             // Only add if the holiday is today or in the future
-                            if (!holidayDate.after(today)) {
+                            if (!holidayDate.before(today)) {
                                 holidaysList.add(new HolidaysAdapter.HolidayItem(holiday, false));
                             }
                         } catch (Exception e) {

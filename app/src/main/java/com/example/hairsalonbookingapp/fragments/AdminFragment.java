@@ -81,65 +81,9 @@ public class AdminFragment extends Fragment {
             navController.navigate(R.id.action_adminFragment_to_holidaysFragment);
         });
 
-        // When clicking the edit announcement button, a dialog will open with the
-        // current announcement
-        // This way the hair dresser can update it whenever they want
-        // The announcement is stored in Firebase
+        // When clicking the edit announcement button, show the new DialogFragment
         postAnnouncementButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Edit Announcement");
-
-            // Create a custom View for the dialog
-            View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_announcement, null);
-            EditText announcementEditText = dialogView.findViewById(R.id.announcement_text_input);
-
-            // Reference to the announcement - there is only one
-            DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements")
-                    .child("current_announcement");
-
-            // Read the current announcement and display it in the dialog
-            announcementsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String existingText = snapshot.getValue(String.class);
-                    if (existingText != null) {
-                        announcementEditText.setText(existingText);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(requireContext(), "Failed to load announcement", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            builder.setView(dialogView);
-
-            // Update announcement button
-            builder.setPositiveButton("Update", (dialog, which) -> {
-                String updatedText = announcementEditText.getText().toString().trim();
-                if (!updatedText.isEmpty()) {
-                    // Update the announcement in Firebase
-                    // Save the new announcement in Firebase instead of the previous one (not in
-                    // addition)
-                    announcementsRef.setValue(updatedText)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(requireContext(), "Announcement updated", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(requireContext(), "Failed to update announcement",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    Toast.makeText(requireContext(), "Please enter a valid announcement", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // Cancel button (closes the dialog)
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
-            builder.create().show();
+            new EditAnnouncementDialog().show(getParentFragmentManager(), "EditAnnouncementDialog");
         });
 
         // Load appointments for the current hairdresser
@@ -252,7 +196,7 @@ public class AdminFragment extends Fragment {
         // Get current date and time
         Calendar currentDateTime = Calendar.getInstance();
 
-        return appointmentDateTime.after(currentDateTime);
+        return !appointmentDateTime.before(currentDateTime);
     }
 
     // Load appointments for the currently logged-in hairdresser

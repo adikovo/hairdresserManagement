@@ -29,9 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="@color/color_lighter"
+        android:backgroundTint="@color/color_darker"
         android:text="Add Hairdresser"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/workers_recycler_view"

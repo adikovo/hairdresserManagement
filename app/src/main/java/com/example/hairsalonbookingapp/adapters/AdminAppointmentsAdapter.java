@@ -53,8 +53,8 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
 
         // Set background color based on whether it's a personal appointment
         int backgroundColor = appointment.isPersonalAppointment()
-                ? context.getResources().getColor(R.color.personal_holiday_color)
-                : context.getResources().getColor(R.color.general_holiday_color);
+                ? context.getResources().getColor(R.color.color_lighter)
+                : context.getResources().getColor(R.color.color_darker);
         holder.cardView.setCardBackgroundColor(backgroundColor);
 
         // Show hairdresser username for non-personal appointments

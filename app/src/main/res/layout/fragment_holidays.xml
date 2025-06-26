@@ -20,7 +20,7 @@
         android:layout_marginBottom="12dp"
         android:gravity="center"
         android:text="Manage Holidays"
-        android:textColor="#040000"
+        android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold" />
 
@@ -31,16 +31,16 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/color_lighter"
         android:text="Add Personal Holiday"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/add_general_holiday_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="@color/color_lighter"
+        android:backgroundTint="@color/color_darker"
         android:text="Add General Holiday"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:visibility="gone" />
 
     <TextView
@@ -50,7 +50,7 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="No holidays added"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone" />

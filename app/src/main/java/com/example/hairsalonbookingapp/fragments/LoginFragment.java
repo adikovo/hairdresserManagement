@@ -85,12 +85,15 @@ public class LoginFragment extends Fragment {
                 return;
             }
 
+            loginButton.setEnabled(false); // Disable button during login
+
             // Check if activity is not null before proceeding
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity != null) {
-                mainActivity.loginUser(email, password);
+                mainActivity.loginUser(email, password, () -> loginButton.setEnabled(true));
             } else {
                 Toast.makeText(getContext(), "Error: Please try again", Toast.LENGTH_SHORT).show();
+                loginButton.setEnabled(true); // Re-enable on error
             }
         });
 
