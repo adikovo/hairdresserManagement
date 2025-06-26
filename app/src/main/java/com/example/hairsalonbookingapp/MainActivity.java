@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -104,9 +105,11 @@ public class MainActivity extends AppCompatActivity {
     // Functions for adding the event to calendar
     private void addAppointmentToCalendar(String title, String location, long startTime, long endTime) {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[] { Manifest.permission.WRITE_CALENDAR }, 100);
+                    new String[] { Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR }, 100);
             return;
         }
 
@@ -119,13 +122,21 @@ public class MainActivity extends AppCompatActivity {
         values.put(CalendarContract.Events.DTSTART, startTime);
         values.put(CalendarContract.Events.DTEND, endTime);
         values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+        values.put(CalendarContract.Events.HAS_ALARM, 1); // Enable reminders
 
-        Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+        try {
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
-        if (uri != null) {
-            Toast.makeText(this, "Appointment scheduled successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to add appointment to calendar", Toast.LENGTH_SHORT).show();
+            if (uri != null) {
+                Toast.makeText(this, "Appointment scheduled successfully", Toast.LENGTH_SHORT).show();
+                Log.d("Calendar", "Event added successfully: " + uri.toString());
+            } else {
+                Toast.makeText(this, "Failed to add appointment to calendar", Toast.LENGTH_SHORT).show();
+                Log.e("Calendar", "Failed to insert event - uri is null");
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error adding to calendar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Calendar", "Exception while inserting event: " + e.getMessage(), e);
         }
     }
 
@@ -133,20 +144,30 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show();
+            boolean allPermissionsGranted = true;
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    Log.e("Calendar", "Permission denied: " + permissions[i]);
+                }
+            }
+
+            if (allPermissionsGranted) {
+                Toast.makeText(this, "Calendar permissions granted!", Toast.LENGTH_SHORT).show();
+                Log.d("Calendar", "All calendar permissions granted successfully");
             } else {
-                Toast.makeText(this, "No permission to modify the calendar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Calendar permissions denied. Cannot add events to calendar.", Toast.LENGTH_LONG)
+                        .show();
+                Log.e("Calendar", "Some calendar permissions were denied");
             }
         }
     }
 
     private long convertDateTimeToMillis(String dateTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getDefault());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
         try {
-            Date date = sdf.parse(dateTime);
+            Date date = formatter.parse(dateTime);
             if (date != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
