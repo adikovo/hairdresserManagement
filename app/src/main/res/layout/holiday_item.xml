@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Individual holiday item layout with date, type, and remove button -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/color_lighter"
+    android:padding="12dp"
+    android:layout_margin="8dp"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/holiday_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Holiday Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="start"/>
+
+        <TextView
+            android:id="@+id/holiday_type_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Personal Holiday"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/delete_holiday_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:text="Remove" />
+</LinearLayout>
