@@ -35,7 +35,7 @@ public class EditAnnouncementDialog extends DialogFragment {
         DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements")
                 .child("current_announcement");
 
-        // Read the current announcement and display it in the dialog
+        // read the current announcement and display it in the dialog
         announcementsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

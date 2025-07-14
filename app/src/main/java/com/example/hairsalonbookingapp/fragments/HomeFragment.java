@@ -88,7 +88,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainActivity = (MainActivity) getActivity();
 
-        // Fetch opening hours from Firebase
         fetchOpeningHours();
 
         // Initialize spinners
@@ -96,8 +95,7 @@ public class HomeFragment extends Fragment {
         hairdresserSpinner = view.findViewById(R.id.hairdresser_spinner);
         selectedDateTimeText = view.findViewById(R.id.selected_datetime_text);
 
-        // Display the fragment title
-        // Shows the name of the connected client along with the Welcome back message
+        // Display welcome message with client name
         TextView welcomeText = view.findViewById(R.id.welcome_text);
         if (mainActivity != null) {
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -111,9 +109,7 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // Get reference to the announcements board path
-        // If there is a message, display the updated message
-        // If there isn't, don't display the board
+        // Load and display salon announcements
         TextView announcementText = view.findViewById(R.id.announcement_text);
         DatabaseReference announcementsRef = FirebaseDatabase.getInstance().getReference("announcements")
                 .child("current_announcement");
@@ -147,7 +143,7 @@ public class HomeFragment extends Fragment {
         serviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) { // Skip "No service selected"
+                if (position > 0) {
                     String selectedService = parent.getItemAtPosition(position).toString();
                     updateAvailableTimeSlots(selectedService);
                 } else {
@@ -177,7 +173,7 @@ public class HomeFragment extends Fragment {
 
         availableHairdressers = new ArrayList<>();
 
-        // Load all hairdressers first
+        // Load available hairdressers
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -219,11 +215,11 @@ public class HomeFragment extends Fragment {
                     hairdresserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (position > 0) { // Skip "No hairdresser selected"
+                            if (position > 0) {
                                 String selectedHairdresser = parent.getItemAtPosition(position).toString();
                                 fetchHairdresserAvailability(selectedHairdresser);
 
-                                // If a service is alreapddy selected, uate time slots
+                                // If a service is alreapddy selected, update time slots
                                 if (serviceSpinner.getSelectedItemPosition() > 0) {
                                     String selectedService = serviceSpinner.getSelectedItem().toString();
                                     updateAvailableTimeSlots(selectedService);
@@ -296,7 +292,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0)
-                    return; // Skip if no time selected
+                    return;
 
                 String selectedTime = parent.getItemAtPosition(position).toString();
                 String selectedDate = selectedDateTimeText.getText().toString();
@@ -308,22 +304,19 @@ public class HomeFragment extends Fragment {
 
                     // Check if the selected time is in the past
                     try {
-                        // Get current date and time
                         Calendar currentTime = Calendar.getInstance();
 
-                        // Parse the selected date and time
                         String[] dateParts = selectedDate.split("-");
                         String[] timeParts = selectedTime.split(":");
 
                         // Create calendar object for selected date and time
                         Calendar selectedDateTime = Calendar.getInstance();
                         selectedDateTime.set(
-                                Integer.parseInt(dateParts[0]), // year
-                                Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                                Integer.parseInt(dateParts[2]), // day
-                                Integer.parseInt(timeParts[0]), // hour
-                                Integer.parseInt(timeParts[1]) // minute
-                        );
+                                Integer.parseInt(dateParts[0]),
+                                Integer.parseInt(dateParts[1]) - 1,
+                                Integer.parseInt(dateParts[2]),
+                                Integer.parseInt(timeParts[0]),
+                                Integer.parseInt(timeParts[1]));
 
                         // If selected time is in the past, show error
                         if (selectedDateTime.before(currentTime)) {
@@ -372,12 +365,11 @@ public class HomeFragment extends Fragment {
                     String[] timeParts = selectedTime.split(":");
 
                     selectedDateTime.set(
-                            Integer.parseInt(dateParts[0]), // year
-                            Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                            Integer.parseInt(dateParts[2]), // day
-                            Integer.parseInt(timeParts[0]), // hour
-                            Integer.parseInt(timeParts[1]) // minute
-                    );
+                            Integer.parseInt(dateParts[0]),
+                            Integer.parseInt(dateParts[1]) - 1,
+                            Integer.parseInt(dateParts[2]),
+                            Integer.parseInt(timeParts[0]),
+                            Integer.parseInt(timeParts[1]));
 
                     if (selectedDateTime.before(now)) {
                         Toast.makeText(getContext(), "Cannot book appointments in the past", Toast.LENGTH_SHORT).show();
@@ -405,6 +397,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches salon opening hours from Firebase and stores them for time slot
+     * calculations
+     */
     private void fetchOpeningHours() {
         DatabaseReference hoursRef = FirebaseDatabase.getInstance().getReference("opening_hours");
         hoursRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -490,7 +486,6 @@ public class HomeFragment extends Fragment {
                     }
                 }
 
-                // After loading personal holidays, load general holidays
                 DatabaseReference generalHolidaysRef = FirebaseDatabase.getInstance().getReference("general_holidays");
                 generalHolidaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -551,7 +546,7 @@ public class HomeFragment extends Fragment {
         selectedHairdresserAppointmentObjects = new ArrayList<>();
     }
 
-    // Helper method to get duration for a service type
+    // method to get duration for a service type
     private String getServiceDuration(String serviceType) {
         if (serviceType == null)
             return "30";
@@ -590,7 +585,8 @@ public class HomeFragment extends Fragment {
         return "30"; // Default duration
     }
 
-    // Update available time slots based on selected service duration and opening hours
+    // update available time slots based on selected service duration and opening
+    // hours
     private void updateAvailableTimeSlots(String selectedService) {
         String durationStr = getServiceDuration(selectedService);
         int durationMinutes = Integer.parseInt(durationStr);
@@ -598,7 +594,7 @@ public class HomeFragment extends Fragment {
         List<String> availableTimeSlots = new ArrayList<>();
         availableTimeSlots.add("No time selected");
 
-        // Generate time slots based on opening/closing hours
+        // generate time slots based on opening/closing hours
         int startMinutes = openingHour * 60 + openingMinute;
         int endMinutes = closingHour * 60 + closingMinute;
         for (int minutes = startMinutes; minutes + durationMinutes <= endMinutes; minutes += 30) {
@@ -649,9 +645,7 @@ public class HomeFragment extends Fragment {
         // check for conflicts with existing appointments
         for (String existingAppointment : selectedHairdresserAppointments) {
             if (existingAppointment.startsWith(selectedDate)) {
-                String existingTime = existingAppointment.substring(selectedDate.length() + 1); // +1 for space
-
-                // get the appointment duration for the existing appointment
+                String existingTime = existingAppointment.substring(selectedDate.length() + 1);
                 String existingDuration = getExistingAppointmentDuration(existingAppointment);
                 int existingDurationMinutes = Integer.parseInt(existingDuration);
 

@@ -44,7 +44,6 @@ public class AppointmentsFragment extends Fragment {
     public AppointmentsFragment() {
     }
 
-
     public static AppointmentsFragment newInstance(String param1, String param2) {
         AppointmentsFragment fragment = new AppointmentsFragment();
         Bundle args = new Bundle();
@@ -148,13 +147,10 @@ public class AppointmentsFragment extends Fragment {
 
         String appointmentKey = appointment.getDateTime().replace(" ", "_").replace(":", "-");
 
-        // cancel the appointment and remove from calendar
         MainActivity mainActivity = (MainActivity) requireActivity();
         mainActivity.markAppointmentAsCanceled(appointmentKey);
 
         appointmentsList.remove(appointment);
-
-        // Update the adapter
         RecyclerView recyclerView = requireView().findViewById(R.id.appointments_recycler_view);
         AppointmentsAdapter adapter = (AppointmentsAdapter) recyclerView.getAdapter();
         if (adapter != null) {

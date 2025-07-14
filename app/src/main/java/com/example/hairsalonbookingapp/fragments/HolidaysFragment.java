@@ -108,6 +108,10 @@ public class HolidaysFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Opens date picker dialog for selecting holiday dates
+     * 
+     */
     private void openDatePicker(boolean isGeneral) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -163,6 +167,9 @@ public class HolidaysFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    /**
+     * Adds a general holiday to all hairdressers' personal holiday lists
+     */
     private void addHolidayToAllHairdressers(String date) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         usersRef.orderByChild("role").equalTo("hair dresser").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -191,6 +198,10 @@ public class HolidaysFragment extends Fragment {
         });
     }
 
+    /**
+     * Loads and displays all holidays for the current user
+     * Filters out past holidays and shows both personal and general holidays
+     */
     private void loadHolidays() {
 
         holidaysList.clear();
@@ -212,10 +223,9 @@ public class HolidaysFragment extends Fragment {
                             String[] dateParts = holiday.split("-");
                             Calendar holidayDate = Calendar.getInstance();
                             holidayDate.set(
-                                    Integer.parseInt(dateParts[0]), // year
-                                    Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                                    Integer.parseInt(dateParts[2]) // day
-                            );
+                                    Integer.parseInt(dateParts[0]),
+                                    Integer.parseInt(dateParts[1]) - 1,
+                                    Integer.parseInt(dateParts[2]));
                             holidayDate.set(Calendar.HOUR_OF_DAY, 0);
                             holidayDate.set(Calendar.MINUTE, 0);
                             holidayDate.set(Calendar.SECOND, 0);
@@ -242,10 +252,9 @@ public class HolidaysFragment extends Fragment {
                                         String[] dateParts = holiday.split("-");
                                         Calendar holidayDate = Calendar.getInstance();
                                         holidayDate.set(
-                                                Integer.parseInt(dateParts[0]), // year
-                                                Integer.parseInt(dateParts[1]) - 1, // month (0-based)
-                                                Integer.parseInt(dateParts[2]) // day
-                                        );
+                                                Integer.parseInt(dateParts[0]),
+                                                Integer.parseInt(dateParts[1]) - 1,
+                                                Integer.parseInt(dateParts[2]));
                                         holidayDate.set(Calendar.HOUR_OF_DAY, 0);
                                         holidayDate.set(Calendar.MINUTE, 0);
                                         holidayDate.set(Calendar.SECOND, 0);
@@ -280,6 +289,9 @@ public class HolidaysFragment extends Fragment {
         });
     }
 
+    /**
+     * Updates the RecyclerView to reflect changes in the holidays list
+     */
     private void updateRecyclerView() {
         if (!isAdded())
             return;
@@ -296,6 +308,9 @@ public class HolidaysFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates and returns a new HolidaysAdapter instance
+     */
     private HolidaysAdapter createHolidaysAdapter() {
         return new HolidaysAdapter(holidaysList, databaseReference, isAdmin);
     }

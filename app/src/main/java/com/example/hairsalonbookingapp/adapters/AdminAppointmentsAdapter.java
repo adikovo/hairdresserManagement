@@ -48,11 +48,10 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
     public void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position) {
         Appointments appointment = appointments.get(position);
 
-
         holder.dateTimeText.setText(appointment.getDateTime());
         holder.serviceTypeText.setText(appointment.getServiceType());
 
-        // Set background color based on whether it's a personal appointment
+        // set background color based on appointment type
         int backgroundColor = appointment.isPersonalAppointment()
                 ? context.getResources().getColor(R.color.color_lighter)
                 : context.getResources().getColor(R.color.color_darker);
@@ -66,7 +65,7 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
             holder.hairdresserText.setVisibility(View.GONE);
         }
 
-        // Delete the selected appointment from Firebase when clicking Cancel
+        // handle appointment cancellation
         holder.cancelButton.setOnClickListener(v -> {
 
             String appointmentKey = appointment.getDateTime().replace(" ", "_").replace(":", "-");
@@ -103,18 +102,16 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
             }
         });
 
-        // Get clientId from APPOINTMENTS
+        // Load and display client information
         String clientId = appointment.getClientId();
         if (clientId != null && !clientId.isEmpty()) {
             DatabaseReference userRef = FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(clientId);
-
-            // Read and display user data from USERS
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    // Update user values in the appointment
+                    // Update display with client information
                     String username = snapshot.child("username").getValue(String.class);
                     String phone = snapshot.child("phone").getValue(String.class);
                     String email = snapshot.child("email").getValue(String.class);
@@ -140,7 +137,6 @@ public class AdminAppointmentsAdapter extends RecyclerView.Adapter<AdminAppointm
     public int getItemCount() {
         return appointments.size();
     }
-
 
     static class AppointmentViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;

@@ -70,7 +70,7 @@ public class RegisterFragment extends Fragment {
         registerButton = view.findViewById(R.id.register_buttonRegister);
         phoneField = view.findViewById(R.id.phoneField);
 
-        // Check if we came from WorkersFragment
+        // check if we came from Workers Fragment
         Bundle args = getArguments();
         if (args != null && args.getBoolean("register_hairdresser", false)) {
             userRole = "hair dresser";
@@ -83,7 +83,7 @@ public class RegisterFragment extends Fragment {
             String username = usernameField.getText().toString();
             String phone = phoneField.getText().toString();
 
-            // Call the function for registering a new user in Main with the relevant registration details
+            // Call the function for registering a new user
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.registerUser(email, password, confirmPassword, username, phone, userRole);
         });

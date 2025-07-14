@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
 // This fragment manages the list of hair dressers (workers)
 // Allows admin to view, add, and remove hair dressers
 // Also manages holidays for each hair dresser
@@ -81,7 +80,7 @@ public class WorkersFragment extends Fragment {
         usersRef = FirebaseDatabase.getInstance().getReference("users");
         hairdressersRef = FirebaseDatabase.getInstance().getReference("hairdressers");
 
-        // Set up real-time listener for worker updates
+        // Load and display workers list
         usersRef.orderByChild("role").equalTo("hair dresser").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -117,6 +116,7 @@ public class WorkersFragment extends Fragment {
         return view;
     }
 
+    // deletes a worker and all their associated data including appointments
     private void deleteWorker(Worker worker, int position) {
         // Remove from users table
         usersRef.orderByChild("email").equalTo(worker.getEmail())
@@ -152,7 +152,7 @@ public class WorkersFragment extends Fragment {
                                                                 .getReference("holidays");
                                                         holidaysRef.child(worker.getUsername()).removeValue();
 
-                                                        // Remove from appointments table (appointments where this worker is the hairdresser)
+                                                        // Remove from appointments table
                                                         DatabaseReference appointmentsRef = FirebaseDatabase
                                                                 .getInstance().getReference("appointments");
                                                         appointmentsRef.orderByChild("hairdresserUsername")

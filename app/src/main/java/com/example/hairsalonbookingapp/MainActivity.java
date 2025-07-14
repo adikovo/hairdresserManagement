@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
     // function for booking an appointment for a client
     public void bookAppointment(String serviceType, String dateTime, String hairdresserUsername) {
-        // get the current user's key
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Appointments appointment = new Appointments(serviceType, userId, dateTime, hairdresserUsername);
@@ -228,10 +227,12 @@ public class MainActivity extends AppCompatActivity {
 
         appointmentRef.child("status").setValue(newStatus)
                 .addOnSuccessListener(aVoid -> {
-                    // If appointment is canceled, remove the calendar event and remove from firebase
+                    // If appointment is canceled, remove the calendar event and remove from
+                    // firebase
                     if ("canceled".equals(newStatus)) {
                         removeCalendarEventForAppointment(appointmentKey);
-                        // Remove the appointment from firebase after a delay to ensure calendarevent is removed
+                        // Remove the appointment from firebase after a delay to ensure calendarevent is
+                        // removed
                         new android.os.Handler().postDelayed(() -> {
                             appointmentRef.removeValue();
                         }, 500);
@@ -295,7 +296,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Function to add appointment to calendar (with optional callback to store event ID)
+    // Function to add appointment to calendar (with optional callback to store
+    // event ID)
     private void addAppointmentToCalendar(String title, String location, long startTime, long endTime,
             String appointmentKey) {
         if (ContextCompat.checkSelfPermission(this,
@@ -375,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
         values.put(CalendarContract.Events.DTSTART, startTime);
         values.put(CalendarContract.Events.DTEND, endTime);
         values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-        values.put(CalendarContract.Events.HAS_ALARM, 1); // Enable reminders
+        values.put(CalendarContract.Events.HAS_ALARM, 1);
         values.put(CalendarContract.Events.DESCRIPTION, "Hair Salon Appointment - " + title);
 
         try {
@@ -559,7 +561,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Function that receives the user's key and returns the username if no username is found, return GUEST
+    // Function that receives the user's key and returns the username if no username
+    // is found, return GUEST
     public Task<String> fetchUsername(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         TaskCompletionSource<String> taskCompletionSource = new TaskCompletionSource<>();
@@ -582,11 +585,12 @@ public class MainActivity extends AppCompatActivity {
 
         return taskCompletionSource.getTask();
     }
+
     /*
-    User login function
-    Receives email and password and checks in Firebase if the user exists
-    If exists, checks the ROLE to determine if they are a hairdresser or client
-    and directs them to the appropriate fragment
+     * User login function
+     * Receives email and password and checks in Firebase if the user exists
+     * If exists, checks the ROLE to determine if they are a hairdresser or client
+     * and directs them to the appropriate fragment
      */
     public void loginUser(String email, String password, Runnable onComplete) {
         if (email.isEmpty() || password.isEmpty()) {

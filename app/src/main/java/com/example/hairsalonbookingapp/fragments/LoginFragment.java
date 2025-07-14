@@ -58,10 +58,10 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        // When clicking the register button, the user navigates to a fragment where they can register
+        // When clicking the register button the user navigates to register fragment
         Button registerButton = view.findViewById(R.id.register_buttonLogin);
         registerButton.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment);
@@ -75,15 +75,15 @@ public class LoginFragment extends Fragment {
             String email = emailField.getText().toString();
             String password = passwordField.getText().toString();
 
-            // Check if email and password are not empty
+            // check if email and password are not empty
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            loginButton.setEnabled(false); // Disable button during login
+            loginButton.setEnabled(false);
 
-            // Check if activity is not null before proceeding
+            // check if activity is not null before proceeding
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity != null) {
                 mainActivity.loginUser(email, password, () -> loginButton.setEnabled(true));
